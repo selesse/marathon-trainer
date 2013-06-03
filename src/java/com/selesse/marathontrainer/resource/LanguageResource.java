@@ -8,8 +8,13 @@ package com.selesse.marathontrainer.resource;
  */
 public interface LanguageResource {
     public String getProgramName();
+
     public String getMenuFileName();
-    public String getMenuExitName();
     int getMenuFileMnemonic();
+
+    public String getMenuExitName();
     int getMenuExitMnemonic();
+
+    public String getHalfMarathonName();
+    public String getFullMarathonName();
 }

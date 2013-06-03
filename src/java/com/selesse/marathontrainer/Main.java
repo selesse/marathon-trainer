@@ -30,13 +30,15 @@ public class Main implements ActionListener {
         setLookAndFeel();
 
         JFrame frame = new JFrame(resources.getProgramName());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         frame.setJMenuBar(createMenuBar());
 
         Main app = new Main();
         Component contents = app.createComponents();
         frame.getContentPane().add(contents, BorderLayout.CENTER);
+
+        frame.setPreferredSize(new Dimension(600, 300));
 
         frame.pack();
         frame.setVisible(true);
@@ -59,6 +61,21 @@ public class Main implements ActionListener {
         menu.setMnemonic(resources.getMenuFileMnemonic());
 
         menuBar.add(menu);
+
+        ButtonGroup radioButtonGroup = new ButtonGroup();
+
+        JRadioButtonMenuItem halfMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getHalfMarathonName());
+        JRadioButtonMenuItem fullMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getFullMarathonName());
+
+        halfMarathonRadioMenuItem.setSelected(true);
+
+        radioButtonGroup.add(halfMarathonRadioMenuItem);
+        radioButtonGroup.add(fullMarathonRadioMenuItem);
+
+        menu.add(halfMarathonRadioMenuItem);
+        menu.add(fullMarathonRadioMenuItem);
+
+        menu.addSeparator();
 
         JMenuItem exitMenuItem = new JMenuItem(resources.getMenuExitName());
         exitMenuItem.setMnemonic(resources.getMenuExitMnemonic());

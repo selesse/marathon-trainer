@@ -34,4 +34,14 @@ public class EnglishLanguageResource implements LanguageResource {
     public int getMenuExitMnemonic() {
         return KeyEvent.VK_X;
     }
+
+    @Override
+    public String getHalfMarathonName() {
+        return "Half marathon";
+    }
+
+    @Override
+    public String getFullMarathonName() {
+        return "Full marathon";
+    }
 }
