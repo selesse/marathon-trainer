@@ -37,4 +37,45 @@ public class EnglishLanguageResource implements LanguageResource {
     public String getFullMarathonName() {
         return "Full marathon";
     }
+
+    @Override
+    public String getMenuSettingsName() {
+        return "Settings";
+    }
+
+    @Override
+    public int getMenuSettingsMnemonic() {
+        return KeyEvent.VK_S;
+    }
+
+    @Override
+    public String getMenuLanguageName() {
+        return "Language";
+    }
+
+    @Override
+    public int getMenuLanguageMnemonic() {
+        return KeyEvent.VK_L;
+    }
+
+    @Override
+    public String getLanguageChooserTitle() {
+        return "Language";
+    }
+
+    @Override
+    public String getLanguageChooserText() {
+        return String.format("Please choose the language you'd like to run %s in:", getProgramName());
+    }
+
+    @Override
+    public String[] getSupportedLanguages() {
+        return new String[] { "English", "French" };
+    }
+
+    @Override
+    public String getLanguageName() {
+        return "English";
+    }
+
 }

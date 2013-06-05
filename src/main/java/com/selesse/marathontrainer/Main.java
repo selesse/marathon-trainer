@@ -2,6 +2,7 @@ package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.resource.language.EnglishLanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
+import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.awt.event.ActionListener;
  */
 public class Main implements ActionListener {
     private static LanguageResource resources = new EnglishLanguageResource();
+    private static JFrame mainFrame;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -26,19 +28,19 @@ public class Main implements ActionListener {
     private static void createAndShowGUI() {
         setSystemLookAndFeel();
 
-        JFrame frame = new JFrame(resources.getProgramName());
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mainFrame = new JFrame(resources.getProgramName());
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        frame.setJMenuBar(createMenuBar());
+        mainFrame.setJMenuBar(createMenuBar());
 
         Main app = new Main();
         Component contents = app.createComponents();
-        frame.getContentPane().add(contents, BorderLayout.CENTER);
+        mainFrame.getContentPane().add(contents, BorderLayout.CENTER);
 
-        frame.setPreferredSize(new Dimension(600, 300));
+        mainFrame.setPreferredSize(new Dimension(600, 300));
 
-        frame.pack();
-        frame.setVisible(true);
+        mainFrame.pack();
+        mainFrame.setVisible(true);
     }
 
     private static void setSystemLookAndFeel() {
@@ -54,10 +56,15 @@ public class Main implements ActionListener {
 
     private static JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu(resources.getMenuFileName());
-        menu.setMnemonic(resources.getMenuFileMnemonic());
+        menuBar.add(createFileMenu());
+        menuBar.add(createSettingsMenu());
 
-        menuBar.add(menu);
+        return menuBar;
+    }
+
+    private static JMenu createFileMenu() {
+        JMenu fileMenu = new JMenu(resources.getMenuFileName());
+        fileMenu.setMnemonic(resources.getMenuFileMnemonic());
 
         ButtonGroup radioButtonGroup = new ButtonGroup();
 
@@ -69,14 +76,14 @@ public class Main implements ActionListener {
         radioButtonGroup.add(halfMarathonRadioMenuItem);
         radioButtonGroup.add(fullMarathonRadioMenuItem);
 
-        menu.add(halfMarathonRadioMenuItem);
-        menu.add(fullMarathonRadioMenuItem);
+        fileMenu.add(halfMarathonRadioMenuItem);
+        fileMenu.add(fullMarathonRadioMenuItem);
 
-        menu.addSeparator();
+        fileMenu.addSeparator();
 
         JMenuItem exitMenuItem = new JMenuItem(resources.getMenuExitName());
         exitMenuItem.setMnemonic(resources.getMenuExitMnemonic());
-        menu.add(exitMenuItem);
+        fileMenu.add(exitMenuItem);
 
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +92,43 @@ public class Main implements ActionListener {
             }
         });
 
-        return menuBar;
+        return fileMenu;
+    }
+
+    private static JMenu createSettingsMenu() {
+        JMenu settingsMenu = new JMenu(resources.getMenuSettingsName());
+        settingsMenu.setMnemonic(resources.getMenuSettingsMnemonic());
+
+        JMenuItem languageMenuItem = new JMenuItem(resources.getMenuLanguageName());
+        languageMenuItem.setMnemonic(resources.getMenuLanguageMnemonic());
+
+        settingsMenu.add(languageMenuItem);
+
+        languageMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] supportedLanguages = resources.getSupportedLanguages();
+
+                String currentLanguage = resources.getLanguageName();
+
+                String chosenLanguage = (String) JOptionPane.showInputDialog(mainFrame,
+                        resources.getLanguageChooserText(),
+                        resources.getLanguageChooserTitle(),
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        supportedLanguages,
+                        supportedLanguages[0]);
+
+                if (chosenLanguage != null) {
+                    if (!currentLanguage.equals(chosenLanguage)) {
+                        resources = LanguageResourceFactory.createResource(chosenLanguage);
+                        createAndShowGUI();
+                    }
+                }
+            }
+        });
+
+        return settingsMenu;
     }
 
     @Override
