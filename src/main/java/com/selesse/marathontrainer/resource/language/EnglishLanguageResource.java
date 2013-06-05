@@ -1,13 +1,7 @@
-package com.selesse.marathontrainer.resource;
+package com.selesse.marathontrainer.resource.language;
 
 import java.awt.event.KeyEvent;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Alex
- * Date: 31/05/13
- * Time: 4:46 PM
- */
 public class EnglishLanguageResource implements LanguageResource {
     @Override
     public String getProgramName() {
@@ -23,7 +17,6 @@ public class EnglishLanguageResource implements LanguageResource {
     public int getMenuFileMnemonic() {
         return KeyEvent.VK_F;
     }
-
 
     @Override
     public String getMenuExitName() {

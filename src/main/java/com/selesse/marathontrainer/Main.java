@@ -1,7 +1,7 @@
 package com.selesse.marathontrainer;
 
-import com.selesse.marathontrainer.resource.EnglishLanguageResource;
-import com.selesse.marathontrainer.resource.LanguageResource;
+import com.selesse.marathontrainer.resource.language.EnglishLanguageResource;
+import com.selesse.marathontrainer.resource.language.LanguageResource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Alex
- * Date: 31/05/13
- * Time: 11:32 AM
+ * Entry point to the application.
  */
 public class Main implements ActionListener {
     private static LanguageResource resources = new EnglishLanguageResource();
@@ -27,7 +24,7 @@ public class Main implements ActionListener {
     }
 
     private static void createAndShowGUI() {
-        setLookAndFeel();
+        setSystemLookAndFeel();
 
         JFrame frame = new JFrame(resources.getProgramName());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -44,7 +41,7 @@ public class Main implements ActionListener {
         frame.setVisible(true);
     }
 
-    private static void setLookAndFeel() {
+    private static void setSystemLookAndFeel() {
         final String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
             UIManager.setLookAndFeel(lookAndFeel);
