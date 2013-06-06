@@ -78,4 +78,14 @@ public class EnglishLanguageResource implements LanguageResource {
         return "English";
     }
 
+    @Override
+    public String getLoadErrorMessage() {
+        return "Sorry, your settings file could not be loaded. Try deleting it and starting over.";
+    }
+
+    @Override
+    public String getLoadErrorTitle() {
+        return "Whoops!";
+    }
+
 }

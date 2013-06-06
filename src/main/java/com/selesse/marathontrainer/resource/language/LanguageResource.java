@@ -4,29 +4,30 @@ package com.selesse.marathontrainer.resource.language;
  * It's advised *not* to perform localization through inheritance. Let's find out why.
  */
 public interface LanguageResource {
-    public String getProgramName();
+    String getProgramName();
+    String getLanguageName();
 
     /**
      * Language string for "File" in the menu.
      */
-    public String getMenuFileName();
+    String getMenuFileName();
     int getMenuFileMnemonic();
 
     /**
      * Language string for "Exit" in the "File" submenu.
      */
-    public String getMenuExitName();
+    String getMenuExitName();
     int getMenuExitMnemonic();
 
     /**
      * Get the language string for "Half marathon" "File" submenu.
      */
-    public String getHalfMarathonName();
+    String getHalfMarathonName();
 
     /**
      * Get the language string for "Full marathon" "File" submenu.
      */
-    public String getFullMarathonName();
+    String getFullMarathonName();
 
     /**
      * Get the language string for "Settings" in the menu.
@@ -55,5 +56,13 @@ public interface LanguageResource {
      */
     String getLanguageChooserTitle();
 
-    String getLanguageName();
+    /**
+     * Message saying there was a load error.
+     */
+    String getLoadErrorMessage();
+
+    /**
+     * Title window of the load error message.
+     */
+    String getLoadErrorTitle();
 }

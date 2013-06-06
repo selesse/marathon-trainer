@@ -1,20 +1,28 @@
 package com.selesse.marathontrainer;
 
+import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.resource.language.EnglishLanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
+import com.selesse.marathontrainer.training.MarathonType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
 
 /**
  * Entry point to the application.
  */
-public class Main implements ActionListener {
+public class Main {
     private static LanguageResource resources = new EnglishLanguageResource();
     private static JFrame mainFrame;
+    private static Settings settings;
+    private static JRadioButtonMenuItem halfMarathonRadioMenuItem;
+    private static JRadioButtonMenuItem fullMarathonRadioMenuItem;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -41,6 +49,73 @@ public class Main implements ActionListener {
 
         mainFrame.pack();
         mainFrame.setVisible(true);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                save();
+            }
+        });
+
+        if (loadSettings()) {
+            switch (settings.getMarathonType()) {
+                case HALF:
+                    halfMarathonRadioMenuItem.setSelected(true);
+                    break;
+                case FULL:
+                    fullMarathonRadioMenuItem.setSelected(true);
+                    break;
+            }
+        }
+        else {
+            // display intro GUI
+        }
+    }
+
+    private static void save() {
+        if (settings != null) {
+            try {
+                String settingsPath = Settings.getSettingsLocation();
+
+                File settingsFile = new File(settingsPath);
+
+                if (!settingsFile.createNewFile()) {
+                  // ignore if the delete fails for now
+                  settingsFile.delete();
+                  settingsFile.createNewFile();
+                }
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(settingsFile));
+                oos.writeObject(settings);
+                oos.flush();
+                oos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean loadSettings() {
+        try {
+            File file = new File("training-plan/settings");
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+
+            settings = (Settings) ois.readObject();
+
+            ois.close();
+
+            return true;
+        }
+        catch (FileNotFoundException e) {
+            // cool, do nothing
+        }
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(mainFrame, resources.getLoadErrorMessage(), resources.getLoadErrorTitle(),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        return false;
     }
 
     private static void setSystemLookAndFeel() {
@@ -66,15 +141,33 @@ public class Main implements ActionListener {
         JMenu fileMenu = new JMenu(resources.getMenuFileName());
         fileMenu.setMnemonic(resources.getMenuFileMnemonic());
 
-        ButtonGroup radioButtonGroup = new ButtonGroup();
+        ButtonGroup buttonGroup = new ButtonGroup();
 
-        JRadioButtonMenuItem halfMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getHalfMarathonName());
-        JRadioButtonMenuItem fullMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getFullMarathonName());
+        halfMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getHalfMarathonName());
+        fullMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getFullMarathonName());
 
-        halfMarathonRadioMenuItem.setSelected(true);
+        halfMarathonRadioMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (settings == null) {
+                    settings = new Settings();
+                }
+                settings.setMarathonType(MarathonType.HALF);
+            }
+        });
+        fullMarathonRadioMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (settings == null) {
+                    settings = new Settings();
+                }
+                settings.setMarathonType(MarathonType.FULL);
+            }
+        });
 
-        radioButtonGroup.add(halfMarathonRadioMenuItem);
-        radioButtonGroup.add(fullMarathonRadioMenuItem);
+
+        buttonGroup.add(halfMarathonRadioMenuItem);
+        buttonGroup.add(fullMarathonRadioMenuItem);
 
         fileMenu.add(halfMarathonRadioMenuItem);
         fileMenu.add(fullMarathonRadioMenuItem);
@@ -129,11 +222,6 @@ public class Main implements ActionListener {
         });
 
         return settingsMenu;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Component createComponents() {

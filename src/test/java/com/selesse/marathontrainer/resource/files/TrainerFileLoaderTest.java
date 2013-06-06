@@ -37,6 +37,7 @@ public class TrainerFileLoaderTest {
 
         try {
             File tempFile = File.createTempFile("marathon-trainer", "test");
+            tempFile.deleteOnExit();
 
             PrintWriter out = new PrintWriter(tempFile);
 
