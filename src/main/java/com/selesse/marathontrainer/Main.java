@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 
 /**
@@ -21,8 +23,6 @@ public class Main {
     private static LanguageResource resources = new EnglishLanguageResource();
     private static JFrame mainFrame;
     private static Settings settings;
-    private static JRadioButtonMenuItem halfMarathonRadioMenuItem;
-    private static JRadioButtonMenuItem fullMarathonRadioMenuItem;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -42,8 +42,6 @@ public class Main {
         mainFrame.setJMenuBar(createMenuBar());
 
         Main app = new Main();
-        Component contents = app.createComponents();
-        mainFrame.getContentPane().add(contents, BorderLayout.CENTER);
 
         mainFrame.setPreferredSize(new Dimension(600, 300));
 
@@ -58,18 +56,26 @@ public class Main {
         });
 
         if (loadSettings()) {
-            switch (settings.getMarathonType()) {
-                case HALF:
-                    halfMarathonRadioMenuItem.setSelected(true);
-                    break;
-                case FULL:
-                    fullMarathonRadioMenuItem.setSelected(true);
-                    break;
-            }
+            showMarathonTrainer();
         }
         else {
-            // display intro GUI
+            showFileNewHint();
         }
+    }
+
+    private static void showFileNewHint() {
+        JPanel pane = new JPanel(new GridLayout(0, 1));
+        JLabel startHintText = new JLabel(resources.getStartHintText());
+        startHintText.setHorizontalAlignment(SwingConstants.CENTER);
+
+        pane.add(startHintText);
+
+        mainFrame.getContentPane().add(pane, BorderLayout.CENTER);
+    }
+
+    private static void showMarathonTrainer() {
+        mainFrame.getContentPane().removeAll();
+        mainFrame.getContentPane().add(new JPanel(new GridLayout(0, 1)), BorderLayout.CENTER);
     }
 
     private static void save() {
@@ -141,37 +147,17 @@ public class Main {
         JMenu fileMenu = new JMenu(resources.getMenuFileName());
         fileMenu.setMnemonic(resources.getMenuFileMnemonic());
 
-        ButtonGroup buttonGroup = new ButtonGroup();
+        JMenuItem newMarathonMenuItem = new JMenuItem(resources.getNewMarathonName());
+        newMarathonMenuItem.setMnemonic(resources.getNewMarathonMnemonic());
 
-        halfMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getHalfMarathonName());
-        fullMarathonRadioMenuItem = new JRadioButtonMenuItem(resources.getFullMarathonName());
-
-        halfMarathonRadioMenuItem.addActionListener(new ActionListener() {
+        newMarathonMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (settings == null) {
-                    settings = new Settings();
-                }
-                settings.setMarathonType(MarathonType.HALF);
-            }
-        });
-        fullMarathonRadioMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (settings == null) {
-                    settings = new Settings();
-                }
-                settings.setMarathonType(MarathonType.FULL);
+                createNewMarathonDialog();
             }
         });
 
-
-        buttonGroup.add(halfMarathonRadioMenuItem);
-        buttonGroup.add(fullMarathonRadioMenuItem);
-
-        fileMenu.add(halfMarathonRadioMenuItem);
-        fileMenu.add(fullMarathonRadioMenuItem);
-
+        fileMenu.add(newMarathonMenuItem);
         fileMenu.addSeparator();
 
         JMenuItem exitMenuItem = new JMenuItem(resources.getMenuExitName());
@@ -186,6 +172,30 @@ public class Main {
         });
 
         return fileMenu;
+    }
+
+    private static void createNewMarathonDialog() {
+        if (settings == null) {
+            settings = new Settings(resources.getLanguageName());
+        }
+
+        final JDialog dialog = new JDialog(mainFrame, resources.getNewMarathonName(), true);
+        final NewMarathonDialog marathonDialog = new NewMarathonDialog(resources, settings);
+
+        dialog.add(marathonDialog);
+
+        dialog.setPreferredSize(new Dimension(200, 200));
+
+        marathonDialog.addPropertyChangeListener("finished", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                dialog.setVisible(false);
+                showMarathonTrainer();
+            }
+        });
+
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
     private static JMenu createSettingsMenu() {
@@ -222,11 +232,5 @@ public class Main {
         });
 
         return settingsMenu;
-    }
-
-    public Component createComponents() {
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-
-        return pane;
     }
 }

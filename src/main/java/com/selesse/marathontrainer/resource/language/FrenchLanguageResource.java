@@ -88,4 +88,63 @@ public class FrenchLanguageResource implements LanguageResource {
         return "Oops!";
     }
 
+    @Override
+    public String getNewMarathonName() {
+        return "Nouveau marathon";
+    }
+
+    @Override
+    public int getNewMarathonMnemonic() {
+        return KeyEvent.VK_N;
+    }
+
+    @Override
+    public String getWhenMarathonText() {
+        return "Quelle est la date de ton marathon?";
+    }
+
+    @Override
+    public String getFinishedText() {
+        return "Fini";
+    }
+
+    @Override
+    public String getFileChooserText() {
+        return "Choisir plan d'entrainement";
+    }
+
+    @Override
+    public String getBadMarathonTypeMessage() {
+        return "Choisissez un type de marathon (semi ou complet)";
+    }
+
+    @Override
+    public String getBadMarathonTypeTitle() {
+        return "Erreur";
+    }
+
+    @Override
+    public String getBadMarathonDateMessage() {
+        return "Choisissez une date apres aujourd'hui";
+    }
+
+    @Override
+    public String getBadMarathonDateTitle() {
+        return "Erreur";
+    }
+
+    @Override
+    public String getStartHintText() {
+        return "Pour commencer, clique sur \"Fichier\" puis \"Nouveau marathon\".";
+    }
+
+    @Override
+    public String getBadTrainingFileMessage() {
+        return "Choisissez un fichier (plan d'entrainement) qui existe.";
+    }
+
+    @Override
+    public String getBadTrainingFileTitle() {
+        return "Erreur";
+    }
 }

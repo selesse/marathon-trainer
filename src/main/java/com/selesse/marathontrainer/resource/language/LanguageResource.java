@@ -20,12 +20,12 @@ public interface LanguageResource {
     int getMenuExitMnemonic();
 
     /**
-     * Get the language string for "Half marathon" "File" submenu.
+     * Get the language string for "Half marathon".
      */
     String getHalfMarathonName();
 
     /**
-     * Get the language string for "Full marathon" "File" submenu.
+     * Get the language string for "Full marathon".
      */
     String getFullMarathonName();
 
@@ -65,4 +65,16 @@ public interface LanguageResource {
      * Title window of the load error message.
      */
     String getLoadErrorTitle();
+    String getNewMarathonName();
+    int getNewMarathonMnemonic();
+    String getFileChooserText();
+    String getWhenMarathonText();
+    String getFinishedText();
+    String getBadMarathonTypeMessage();
+    String getBadMarathonTypeTitle();
+    String getBadMarathonDateMessage();
+    String getBadMarathonDateTitle();
+    String getBadTrainingFileMessage();
+    String getBadTrainingFileTitle();
+    String getStartHintText();
 }

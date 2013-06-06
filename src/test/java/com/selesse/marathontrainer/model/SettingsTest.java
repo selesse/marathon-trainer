@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -20,7 +21,9 @@ public class SettingsTest {
             settingsFile = File.createTempFile("marathon-trainer", "sample");
             settingsFile.deleteOnExit();
 
-            Settings settings = new Settings(MarathonType.HALF, settingsFile.getAbsolutePath());
+            Settings settings = new Settings("English");
+            settings.setMarathonType(MarathonType.HALF);
+            settings.setTrainingPlanPath(settingsFile.getAbsolutePath());
 
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(settingsFile));
             oos.writeObject(settings);
