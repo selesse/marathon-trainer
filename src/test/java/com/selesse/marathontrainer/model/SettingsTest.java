@@ -1,16 +1,12 @@
 package com.selesse.marathontrainer.model;
 
 import com.selesse.marathontrainer.training.MarathonType;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.Date;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 public class SettingsTest {
     private File settingsFile;

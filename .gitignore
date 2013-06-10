@@ -4,3 +4,7 @@ out/
 .idea/
 *.iml
 *.iws
+
+build/
+.gradle/
+release/

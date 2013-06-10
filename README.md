@@ -10,6 +10,14 @@ enter your training plan and launch the application, it'll tell you (for
 example) that today you'll be running 9 KM at a regular pace. (The paces for
 the different run types are defined via the training plan.)
 
+Building the Code
+-----------------
+
+To build the code, compile the code, run all the tests, and export the jar
+into the "release" directory, type:
+
+    gradle
+
 Setup
 -----
 

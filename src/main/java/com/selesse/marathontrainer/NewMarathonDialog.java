@@ -33,7 +33,7 @@ public class NewMarathonDialog extends JPanel {
         finishButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Date marathonDate = (Date) datePicker.getEditor().getValue();
+                Date marathonDate = datePicker.getDate();
                 MarathonType marathonType = null;
                 if (halfMarathonRadioButton.isSelected()) {
                     marathonType = MarathonType.HALF;
