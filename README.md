@@ -13,8 +13,8 @@ the different run types are defined via the training plan.)
 Building the Code
 -----------------
 
-To build the code, compile the code, run all the tests, and export the jar
-into the "release" directory, type:
+To compile the code, run all the tests, and publish the jar into the `release`
+directory, type the following:
 
     gradle
 
