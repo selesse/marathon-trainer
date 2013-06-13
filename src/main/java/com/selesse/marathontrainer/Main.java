@@ -1,9 +1,13 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
+import com.selesse.marathontrainer.resource.files.TrainerFileLoader;
 import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
+import com.selesse.marathontrainer.training.TrainingActivity;
+import com.selesse.marathontrainer.training.TrainingPlan;
+import org.jdesktop.swingx.JXMonthView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +16,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Entry point to the application.
@@ -40,12 +47,10 @@ public class Main {
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainFrame.setJMenuBar(createMenuBar());
-
-        Main app = new Main();
-
-        mainFrame.setPreferredSize(new Dimension(600, 300));
+        mainFrame.setPreferredSize(new Dimension(800, 400));
 
         mainFrame.pack();
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -79,7 +84,46 @@ public class Main {
 
     private static void showMarathonTrainer() {
         mainFrame.getContentPane().removeAll();
-        mainFrame.getContentPane().add(new JPanel(new GridLayout(0, 1)), BorderLayout.CENTER);
+        mainFrame.getContentPane().repaint();
+        JPanel innerMarathonPanel = new JPanel(new GridBagLayout());
+
+        // set up the month view
+        JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
+        monthView.setFirstDayOfWeek(Calendar.SUNDAY);
+        monthView.setTraversable(true);
+        monthView.setBoxPaddingX(5);
+        monthView.setBoxPaddingY(10);
+        monthView.setBackground(innerMarathonPanel.getBackground());
+
+        // set up the label by getting today's activity
+        TrainingPlan trainingPlan = TrainerFileLoader.loadTrainingPlan(settings.getMarathonType(),
+                settings.getTrainingPlanPath());
+        TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
+
+        JLabel label = new JLabel(todaysActivity.getTrainingActivityType().toString());
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // set the constraints for the monthView
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(20, 0, 0, 0);
+
+        innerMarathonPanel.add(monthView, constraints);
+
+        // set the constraints for the label
+        constraints.gridwidth = 3;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        constraints.weighty = 1.0;
+        constraints.insets = new Insets(0, 0, 0, 0);
+
+        innerMarathonPanel.add(label, constraints);
+
+        mainFrame.getContentPane().add(innerMarathonPanel);
     }
 
     private static void save() {

@@ -1,6 +1,7 @@
 package com.selesse.marathontrainer.resource.language;
 
 import java.text.Normalizer;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public enum Language {
@@ -26,5 +27,16 @@ public enum Language {
         String nfdNormalizedString = Normalizer.normalize(string, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(nfdNormalizedString).replaceAll("");
+    }
+
+    public Locale getLocale() {
+        switch (this) {
+            case ENGLISH:
+                return Locale.ENGLISH;
+            case FRENCH:
+                return Locale.FRENCH;
+            default:
+                return Locale.ENGLISH;
+        }
     }
 }

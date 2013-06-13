@@ -1,17 +1,16 @@
 package com.selesse.marathontrainer.training;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TrainingPlan {
     private MarathonType marathonType;
     private Map<TrainingActivityType, String> activityReferenceSpeed;
     private List<TrainingWeek> trainingWeekList;
+    private Date marathonDate;
 
-    public TrainingPlan(MarathonType marathonType) {
+    public TrainingPlan(MarathonType marathonType, Date marathonDate) {
         this.marathonType = marathonType;
+        this.marathonDate = marathonDate;
         this.activityReferenceSpeed = new HashMap<TrainingActivityType, String>();
         this.trainingWeekList = new ArrayList<TrainingWeek>(20);
     }
@@ -37,5 +36,10 @@ public class TrainingPlan {
             return null;
         }
         return trainingWeekList.get(weekIndex - 1);
+    }
+
+    public TrainingActivity getActivityForDate(Date date) {
+        // temporarily return bogus activity
+        return new TrainingActivity("fartlek");
     }
 }

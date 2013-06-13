@@ -9,7 +9,7 @@ import java.util.*;
 
 public class TrainerFileLoader {
     public static TrainingPlan loadTrainingPlan(MarathonType marathonType, String trainingFilePath) {
-        TrainingPlan trainingPlan = new TrainingPlan(marathonType);
+        TrainingPlan trainingPlan = new TrainingPlan(marathonType, new Date());
 
         File trainingPlanFile = new File(trainingFilePath);
 
