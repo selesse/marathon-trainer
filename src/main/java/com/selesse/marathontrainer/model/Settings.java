@@ -13,8 +13,8 @@ public class Settings implements Serializable {
     private Date marathonDate;
     private Language language;
 
-    public Settings(String language) {
-        this.language = Language.valueOf(language.toUpperCase());
+    public Settings(Language language) {
+        this.language = language;
     }
 
     public static String getSettingsLocation() {

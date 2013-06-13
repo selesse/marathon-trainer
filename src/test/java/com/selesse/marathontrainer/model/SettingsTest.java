@@ -1,5 +1,6 @@
 package com.selesse.marathontrainer.model;
 
+import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.training.MarathonType;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class SettingsTest {
             settingsFile = File.createTempFile("marathon-trainer", "sample");
             settingsFile.deleteOnExit();
 
-            Settings settings = new Settings("English");
+            Settings settings = new Settings(Language.ENGLISH);
             settings.setMarathonType(MarathonType.HALF);
             settings.setTrainingPlanPath(settingsFile.getAbsolutePath());
 

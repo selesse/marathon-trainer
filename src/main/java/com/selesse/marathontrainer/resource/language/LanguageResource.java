@@ -6,6 +6,7 @@ package com.selesse.marathontrainer.resource.language;
 public interface LanguageResource {
     String getProgramName();
     String getLanguageName();
+    Language getLanguage();
 
     /**
      * Language string for "File" in the menu.
@@ -40,11 +41,6 @@ public interface LanguageResource {
      */
     String getMenuLanguageName();
     int getMenuLanguageMnemonic();
-
-    /**
-     * An array of supported languages.
-     */
-    String[] getSupportedLanguages();
 
     /**
      * The title of the dialog that pops up when you're in the "Languages" modal dialog.

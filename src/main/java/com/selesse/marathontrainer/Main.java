@@ -1,17 +1,14 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
-import com.selesse.marathontrainer.resource.language.EnglishLanguageResource;
+import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
-import com.selesse.marathontrainer.training.MarathonType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -20,7 +17,7 @@ import java.io.*;
  * Entry point to the application.
  */
 public class Main {
-    private static LanguageResource resources = new EnglishLanguageResource();
+    private static LanguageResource resources;
     private static JFrame mainFrame;
     private static Settings settings;
 
@@ -28,12 +25,15 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                createAndShowGUI();
+                settings = loadOrInitializeSettings();
+                createAndShowGUI(settings.getLanguage());
             }
         });
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(Language language) {
+        resources = LanguageResourceFactory.createResource(language);
+
         setSystemLookAndFeel();
 
         mainFrame = new JFrame(resources.getProgramName());
@@ -55,11 +55,15 @@ public class Main {
             }
         });
 
-        if (loadSettings()) {
-            showMarathonTrainer();
+        showFirstScreen();
+    }
+
+    private static void showFirstScreen() {
+        if (settings.getMarathonDate() == null) {
+            showFileNewHint();
         }
         else {
-            showFileNewHint();
+            showMarathonTrainer();
         }
     }
 
@@ -102,16 +106,16 @@ public class Main {
         }
     }
 
-    private static boolean loadSettings() {
+    private static Settings loadOrInitializeSettings() {
         try {
-            File file = new File("training-plan/settings");
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+            File settingsFile = new File(Settings.getSettingsLocation());
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(settingsFile));
 
             settings = (Settings) ois.readObject();
 
             ois.close();
 
-            return true;
+            return settings;
         }
         catch (FileNotFoundException e) {
             // cool, do nothing
@@ -121,7 +125,7 @@ public class Main {
                     JOptionPane.ERROR_MESSAGE);
         }
 
-        return false;
+        return new Settings(Language.ENGLISH);
     }
 
     private static void setSystemLookAndFeel() {
@@ -175,10 +179,6 @@ public class Main {
     }
 
     private static void createNewMarathonDialog() {
-        if (settings == null) {
-            settings = new Settings(resources.getLanguageName());
-        }
-
         final JDialog dialog = new JDialog(mainFrame, resources.getNewMarathonName(), true);
         final NewMarathonDialog marathonDialog = new NewMarathonDialog(resources, settings);
 
@@ -210,9 +210,9 @@ public class Main {
         languageMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Object[] supportedLanguages = resources.getSupportedLanguages();
+                Object[] supportedLanguages = Language.getSupportedLanguages();
 
-                String currentLanguage = resources.getLanguageName();
+                Language currentLanguage = resources.getLanguage();
 
                 String chosenLanguage = (String) JOptionPane.showInputDialog(mainFrame,
                         resources.getLanguageChooserText(),
@@ -223,9 +223,14 @@ public class Main {
                         supportedLanguages[0]);
 
                 if (chosenLanguage != null) {
-                    if (!currentLanguage.equals(chosenLanguage)) {
-                        resources = LanguageResourceFactory.createResource(chosenLanguage);
-                        createAndShowGUI();
+                    Language newLanguage = Language.getLanguageFromLocaleString(chosenLanguage);
+                    if (currentLanguage != newLanguage) {
+                        settings.setLanguage(newLanguage);
+
+                        mainFrame.setVisible(false);
+                        mainFrame.dispose();
+                        mainFrame = null;
+                        createAndShowGUI(newLanguage);
                     }
                 }
             }

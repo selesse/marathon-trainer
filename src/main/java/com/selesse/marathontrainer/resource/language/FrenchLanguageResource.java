@@ -69,11 +69,6 @@ public class FrenchLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String[] getSupportedLanguages() {
-        return new String[] { "Francais", "Anglais" };
-    }
-
-    @Override
     public String getLanguageName() {
         return "Francais";
     }
@@ -131,6 +126,11 @@ public class FrenchLanguageResource implements LanguageResource {
     @Override
     public String getBadMarathonDateTitle() {
         return "Erreur";
+    }
+
+    @Override
+    public Language getLanguage() {
+        return Language.FRENCH;
     }
 
     @Override

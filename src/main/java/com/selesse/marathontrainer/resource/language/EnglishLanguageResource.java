@@ -69,8 +69,8 @@ public class EnglishLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String[] getSupportedLanguages() {
-        return new String[] { "English", "French" };
+    public Language getLanguage() {
+        return Language.ENGLISH;
     }
 
     @Override
