@@ -1,6 +1,7 @@
 package com.selesse.marathontrainer.training;
 
 import com.selesse.marathontrainer.model.Weekday;
+import com.selesse.marathontrainer.resource.language.LanguageResource;
 
 import java.util.*;
 
@@ -12,7 +13,12 @@ public class TrainingPlan {
 
     public TrainingPlan(MarathonType marathonType) {
         this.marathonType = marathonType;
-        this.activityReferenceSpeed = new HashMap<TrainingActivityType, String>();
+        this.activityReferenceSpeed = new TreeMap<TrainingActivityType, String>(new Comparator<TrainingActivityType>() {
+            @Override
+            public int compare(TrainingActivityType o1, TrainingActivityType o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
         this.trainingWeekList = new ArrayList<TrainingWeek>(20);
     }
 
@@ -95,5 +101,17 @@ public class TrainingPlan {
         long millisecondDiff = firstDate.getTime() - secondDate.getTime();
 
         return (int) Math.ceil((millisecondDiff / (1000 * 60 * 60 * 24.0)));
+    }
+
+    public String getReferenceString(LanguageResource resource) {
+        StringBuilder referenceSpeeds = new StringBuilder();
+        for (TrainingActivityType activityType : activityReferenceSpeed.keySet()) {
+            referenceSpeeds.append(resource.printFriendlyString(activityType));
+            referenceSpeeds.append(": ");
+            referenceSpeeds.append(activityReferenceSpeed.get(activityType));
+            referenceSpeeds.append("    ");
+        }
+
+        return referenceSpeeds.toString();
     }
 }

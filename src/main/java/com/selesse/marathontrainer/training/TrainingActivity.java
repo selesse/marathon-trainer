@@ -65,9 +65,9 @@ public class TrainingActivity {
             case UNKNOWN:
                 return baseString;
             case SPEED:
-                return baseString + ": " + numberOfTimes + " x " + quantity;
+                return baseString + ": " + numberOfTimes + " x " + quantity + " KM";
             default:
-                return baseString + ": " + quantity;
+                return baseString + ": " + quantity + " KM";
         }
     }
 }
