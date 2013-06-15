@@ -1,7 +1,6 @@
 package com.selesse.marathontrainer.model;
 
 import com.selesse.marathontrainer.resource.language.Language;
-import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.training.MarathonType;
 
 import java.io.Serializable;
@@ -17,8 +16,12 @@ public class Settings implements Serializable {
         this.language = language;
     }
 
+    public static String getSettingsDirectory() {
+        return "training-plan";
+    }
+
     public static String getSettingsLocation() {
-        return "training-plan/settings";
+        return getSettingsDirectory() + "/.settings";
     }
 
     public MarathonType getMarathonType() {

@@ -1,6 +1,8 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
+import com.selesse.marathontrainer.resource.files.InvalidTrainingFileException;
+import com.selesse.marathontrainer.resource.files.TrainerFileLoader;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.training.MarathonType;
 import org.jdesktop.swingx.JXDatePicker;
@@ -8,8 +10,8 @@ import org.jdesktop.swingx.JXDatePicker;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 
 public class NewMarathonDialog extends JPanel {
@@ -27,12 +29,24 @@ public class NewMarathonDialog extends JPanel {
         buttonGroup.add(halfMarathonRadioButton);
         buttonGroup.add(fullMarathonRadioButton);
 
+        halfMarathonRadioButton.setSelected(true);
+
         final JButton finishButton = new JButton(resource.getFinishedText());
         final JXDatePicker datePicker = new JXDatePicker();
 
-        finishButton.addActionListener(new ActionListener() {
+        datePicker.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (isBadMarathonDate(datePicker.getDate())) {
+                    warnBadMarathonDate(resource);
+                    datePicker.setDate(null);
+                }
+            }
+        });
+
+        finishButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
                 Date marathonDate = datePicker.getDate();
                 MarathonType marathonType = null;
                 if (halfMarathonRadioButton.isSelected()) {
@@ -49,18 +63,24 @@ public class NewMarathonDialog extends JPanel {
                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (!marathonDate.after(new Date())) {
-                    JOptionPane.showMessageDialog(currentPanel,
-                            resource.getBadMarathonDateMessage(),
-                            resource.getBadMarathonDateTitle(),
-                            JOptionPane.ERROR_MESSAGE);
+
+                if (isBadMarathonDate(marathonDate)) {
+                    warnBadMarathonDate(resource);
                     return;
                 }
-                if (chosenFile == null || !chosenFile.exists()) {
-                    JOptionPane.showMessageDialog(currentPanel,
-                            resource.getBadTrainingFileMessage(),
-                            resource.getBadTrainingFileTitle(),
-                            JOptionPane.ERROR_MESSAGE);
+
+                try {
+                    if (chosenFile == null || !chosenFile.exists()) {
+                        warnBadFile(resource);
+                    }
+                    TrainerFileLoader.loadTrainingPlan(marathonType, chosenFile.getPath());
+                }
+                catch (FileNotFoundException e) {
+                    warnBadFile(resource);
+                    return;
+                }
+                catch (InvalidTrainingFileException e) {
+                    warnInvalidFileType(resource);
                     return;
                 }
 
@@ -73,17 +93,29 @@ public class NewMarathonDialog extends JPanel {
         });
 
 
-        fileChooser = new JFileChooser();
+        fileChooser = new JFileChooser(Settings.getSettingsDirectory());
         fileChooserButton = new JButton(resource.getFileChooserText());
 
         fileChooserButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent event) {
                 int returnVal = fileChooser.showOpenDialog(NewMarathonDialog.this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     chosenFile = fileChooser.getSelectedFile();
-                    fileChooserButton.setText(chosenFile.getName());
+
+                    try {
+                        chosenFile = fileChooser.getSelectedFile();
+                        if (chosenFile != null && chosenFile.exists()) {
+                            TrainerFileLoader.loadTrainingPlan(MarathonType.FULL, chosenFile.getAbsolutePath());
+                        }
+                        fileChooserButton.setText(chosenFile.getName());
+                    }
+                    catch (InvalidTrainingFileException e) {
+                        warnInvalidFileType(resource);
+                    } catch (FileNotFoundException e) {
+                        warnBadFile(resource);
+                    }
                 }
             }
         });
@@ -95,4 +127,30 @@ public class NewMarathonDialog extends JPanel {
         add(fileChooserButton);
         add(finishButton);
     }
+
+    private void warnInvalidFileType(LanguageResource resource) {
+        JOptionPane.showMessageDialog(currentPanel,
+                resource.getBadFileTypeMessage(),
+                resource.getBadFileTypeTitle(),
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void warnBadMarathonDate(LanguageResource resource) {
+        JOptionPane.showMessageDialog(currentPanel,
+                resource.getBadMarathonDateMessage(),
+                resource.getBadMarathonDateTitle(),
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void warnBadFile(LanguageResource resource) {
+        JOptionPane.showMessageDialog(currentPanel,
+                resource.getBadTrainingFileMessage(),
+                resource.getBadTrainingFileTitle(),
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private boolean isBadMarathonDate(Date date) {
+        return date == null || date.before(new Date());
+    }
+
 }

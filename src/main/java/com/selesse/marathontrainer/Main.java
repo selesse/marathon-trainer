@@ -1,12 +1,10 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
-import com.selesse.marathontrainer.resource.files.TrainerFileLoader;
 import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
 import com.selesse.marathontrainer.training.TrainingActivity;
-import com.selesse.marathontrainer.training.TrainingPlan;
 import org.jdesktop.swingx.JXMonthView;
 
 import javax.swing.*;
@@ -17,8 +15,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Entry point to the application.
@@ -96,9 +92,7 @@ public class Main {
         monthView.setBackground(innerMarathonPanel.getBackground());
 
         // set up the label by getting today's activity
-        TrainingPlan trainingPlan = TrainerFileLoader.loadTrainingPlan(settings.getMarathonType(),
-                settings.getTrainingPlanPath());
-        TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
+        TrainingActivity todaysActivity = new TrainingActivity("fartlek");
 
         JLabel label = new JLabel(todaysActivity.getTrainingActivityType().toString());
         label.setHorizontalAlignment(SwingConstants.CENTER);

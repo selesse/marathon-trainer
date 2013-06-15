@@ -28,4 +28,7 @@ public class TrainingWeek {
         return activityList.get(weekday.ordinal());
     }
 
+    public boolean isEmpty() {
+        return activityList.isEmpty();
+    }
 }

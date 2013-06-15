@@ -4,6 +4,7 @@ import com.selesse.marathontrainer.model.Weekday;
 import com.selesse.marathontrainer.training.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +24,7 @@ public class TrainerFileLoaderTest {
     private TrainingPlan trainingPlan;
 
     @Before
-    public void setUpSampleFile() {
+    public void setUpSampleFile() throws IOException, InvalidTrainingFileException {
         List<String> fileSampleContents = new ArrayList<String>();
 
         fileSampleContents.add("long 6:30-7:30");
@@ -35,24 +36,35 @@ public class TrainerFileLoaderTest {
         fileSampleContents.add("regular 3 | tempo 4 | speed 2.6 3 |    rest   |     rest     | long 3 | long 2");
         fileSampleContents.add("tempo 3   | hills 1 | fartlek 12  | regular 9 | challenge 16 | long 2 | rest");
 
-        try {
-            File tempFile = File.createTempFile("marathon-trainer", "test");
-            tempFile.deleteOnExit();
+        File tempFile = File.createTempFile("marathon-trainer", "test");
+        tempFile.deleteOnExit();
 
-            PrintWriter out = new PrintWriter(tempFile);
+        PrintWriter out = new PrintWriter(tempFile);
 
-            for (String line : fileSampleContents) {
-                out.println(line);
-            }
-
-            out.close();
-
-            trainingPlan = TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, tempFile.getAbsolutePath());
-        } catch (FileNotFoundException e) {
-            // failed?
-        } catch (IOException e) {
-            // failed?
+        for (String line : fileSampleContents) {
+            out.println(line);
         }
+
+        out.close();
+
+        trainingPlan = TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void testNonExistentFileThrowsException() throws FileNotFoundException, InvalidTrainingFileException {
+        TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, "./foobar");
+    }
+
+    @Test(expected = InvalidTrainingFileException.class)
+    public void testBadTrainingFile() throws IOException, FileNotFoundException, InvalidTrainingFileException {
+        File tempFile = File.createTempFile("foo", "bar");
+        tempFile.deleteOnExit();
+
+        PrintWriter out = new PrintWriter(tempFile);
+        out.println("Hello!");
+        out.close();
+
+        TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, tempFile.getAbsolutePath());
     }
 
     @Test

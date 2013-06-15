@@ -5,22 +5,24 @@ import com.selesse.marathontrainer.training.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Date;
+import java.util.IllegalFormatException;
+import java.util.Scanner;
 
 public class TrainerFileLoader {
-    public static TrainingPlan loadTrainingPlan(MarathonType marathonType, String trainingFilePath) {
+    public static TrainingPlan loadTrainingPlan(MarathonType marathonType, String trainingFilePath)
+            throws FileNotFoundException, InvalidTrainingFileException {
         TrainingPlan trainingPlan = new TrainingPlan(marathonType, new Date());
 
         File trainingPlanFile = new File(trainingFilePath);
 
-        try {
-            Scanner fileScanner = new Scanner(trainingPlanFile);
+        Scanner fileScanner = new Scanner(trainingPlanFile);
 
-            parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
-            parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
-        }
-        catch (FileNotFoundException e) {
-            // TODO handle
+        parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
+        parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+
+        if (trainingPlan.getTrainingWeekList().size() == 0) {
+            throw new InvalidTrainingFileException();
         }
 
         return trainingPlan;
@@ -43,7 +45,9 @@ public class TrainerFileLoader {
             else {
                 // TODO handle gracefully
             }
-            trainingPlan.addTrainingWeek(trainingWeek);
+            if (!trainingWeek.isEmpty()) {
+                trainingPlan.addTrainingWeek(trainingWeek);
+            }
         }
     }
 

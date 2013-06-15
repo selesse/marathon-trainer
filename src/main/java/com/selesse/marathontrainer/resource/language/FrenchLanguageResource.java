@@ -139,6 +139,16 @@ public class FrenchLanguageResource implements LanguageResource {
     }
 
     @Override
+    public String getBadFileTypeMessage() {
+        return "Ce n'est pas un plan d'entrainment valide.";
+    }
+
+    @Override
+    public String getBadFileTypeTitle() {
+        return "Mauvais fichier";
+    }
+
+    @Override
     public String getBadTrainingFileMessage() {
         return "Choisissez un fichier (plan d'entrainement) qui existe.";
     }

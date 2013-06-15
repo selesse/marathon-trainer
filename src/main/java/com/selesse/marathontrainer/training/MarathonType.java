@@ -1,7 +1,5 @@
 package com.selesse.marathontrainer.training;
 
-import java.util.List;
-
 public enum MarathonType {
     HALF,
     FULL;
