@@ -1,9 +1,15 @@
 apply plugin: 'java'
 
-defaultTasks 'clean', 'build', 'uploadArchives'
+defaultTasks 'clean', 'build', 'copyTrainingPlans'
 
 sourceCompatibility = 1.7
 version = '1.0'
+
+ext {
+  releaseDir = "release"
+  trainingPlanDir = "training-plan"
+  trainingReleasePath = releaseDir + "/" + trainingPlanDir
+}
 
 repositories {
   mavenCentral()
@@ -15,6 +21,7 @@ dependencies {
 }
 
 jar {
+  destinationDir = file(releaseDir)
   manifest {
     attributes 'Manifest-Version': version, 'Main-Class': 'com.selesse.marathontrainer.Main'
   }
@@ -22,10 +29,15 @@ jar {
   from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
-uploadArchives {
-  repositories {
-    flatDir {
-      dirs 'release'
-    }
-  }
+jar.doLast {
+  ant.mkdir(dir: trainingReleasePath)
+}
+
+task copyTrainingPlans(type: Copy, dependsOn: 'jar') {
+  from trainingPlanDir
+  into trainingReleasePath
+}
+
+clean.doLast {
+  ant.delete(dir: releaseDir)
 }
