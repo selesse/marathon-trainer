@@ -1,10 +1,13 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
+import com.selesse.marathontrainer.resource.files.InvalidTrainingFileException;
+import com.selesse.marathontrainer.resource.files.TrainingPlanLoader;
 import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
 import com.selesse.marathontrainer.training.TrainingActivity;
+import com.selesse.marathontrainer.training.TrainingPlan;
 import org.jdesktop.swingx.JXMonthView;
 
 import javax.swing.*;
@@ -15,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Entry point to the application.
@@ -23,6 +27,7 @@ public class Main {
     private LanguageResource resources;
     private JFrame mainFrame;
     private Settings settings;
+    private TrainingPlan trainingPlan;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -89,17 +94,40 @@ public class Main {
         JPanel innerMarathonPanel = new JPanel(new GridBagLayout());
 
         // set up the month view
-        JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
+        final JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
         monthView.setFirstDayOfWeek(Calendar.SUNDAY);
         monthView.setTraversable(true);
         monthView.setBoxPaddingX(5);
         monthView.setBoxPaddingY(10);
         monthView.setBackground(innerMarathonPanel.getBackground());
 
-        // set up the label by getting today's activity
-        TrainingActivity todaysActivity = new TrainingActivity("fartlek");
+        final JLabel label = new JLabel();
 
-        JLabel label = new JLabel(todaysActivity.getTrainingActivityType().toString());
+        monthView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Date selectedDate = monthView.getSelectionDate();
+                TrainingActivity trainingActivity = trainingPlan.getActivityForDate(selectedDate);
+
+                label.setText(trainingActivity.getPrintFriendlyString(resources));
+
+            }
+        });
+
+        // set up the label by getting today's activity
+        if (trainingPlan == null) {
+            try {
+                trainingPlan = TrainingPlanLoader.loadPlan(settings.getMarathonType(), settings.getTrainingPlanPath());
+                trainingPlan.setMarathonDate(settings.getMarathonDate());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (InvalidTrainingFileException e) {
+                e.printStackTrace();
+            }
+        }
+        TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
+
+        label.setText(todaysActivity.getPrintFriendlyString(resources));
         label.setHorizontalAlignment(SwingConstants.CENTER);
 
         // set the constraints for the monthView
@@ -123,6 +151,7 @@ public class Main {
         innerMarathonPanel.add(label, constraints);
 
         mainFrame.getContentPane().add(innerMarathonPanel);
+        mainFrame.setVisible(true);
     }
 
     private void save() {
@@ -133,9 +162,9 @@ public class Main {
                 File settingsFile = new File(settingsPath);
 
                 if (!settingsFile.createNewFile()) {
-                  // ignore if the delete fails for now
-                  settingsFile.delete();
-                  settingsFile.createNewFile();
+                    // ignore if the delete fails for now
+                    settingsFile.delete();
+                    settingsFile.createNewFile();
                 }
                 ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(settingsFile));
                 oos.writeObject(settings);
@@ -232,7 +261,16 @@ public class Main {
         marathonDialog.addPropertyChangeListener("finished", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                dialog.setVisible(false);
+                dialog.dispose();
+                try {
+                    trainingPlan = TrainingPlanLoader.loadPlan(settings.getMarathonType(),
+                            settings.getTrainingPlanPath());
+                    trainingPlan.setMarathonDate(settings.getMarathonDate());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InvalidTrainingFileException e) {
+                    e.printStackTrace();
+                }
                 showMarathonTrainer();
             }
         });

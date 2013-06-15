@@ -2,7 +2,7 @@ package com.selesse.marathontrainer.resource.language;
 
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 public class LanguageTest {
     @Test
