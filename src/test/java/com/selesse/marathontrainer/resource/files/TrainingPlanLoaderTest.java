@@ -4,7 +4,6 @@ import com.selesse.marathontrainer.model.Weekday;
 import com.selesse.marathontrainer.training.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,14 +16,14 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 /**
- * This test suite covers the {@link TrainerFileLoader} class's ability to correctly load
+ * This test suite covers the {@link TrainingPlanLoader} class's ability to correctly load
  * training plans via the file format.
  */
-public class TrainerFileLoaderTest {
+public class TrainingPlanLoaderTest {
     private TrainingPlan trainingPlan;
 
-    @Before
-    public void setUpSampleFile() throws IOException, InvalidTrainingFileException {
+    public static TrainingPlan createMockTrainingPlan() throws IOException, InvalidTrainingFileException {
+
         List<String> fileSampleContents = new ArrayList<String>();
 
         fileSampleContents.add("long 6:30-7:30");
@@ -47,12 +46,17 @@ public class TrainerFileLoaderTest {
 
         out.close();
 
-        trainingPlan = TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+        return TrainingPlanLoader.loadPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+    }
+
+    @Before
+    public void setUpSampleFile() throws IOException, InvalidTrainingFileException {
+        trainingPlan = createMockTrainingPlan();
     }
 
     @Test(expected = FileNotFoundException.class)
     public void testNonExistentFileThrowsException() throws FileNotFoundException, InvalidTrainingFileException {
-        TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, "./foobar");
+        TrainingPlanLoader.loadPlan(MarathonType.HALF, "./foobar");
     }
 
     @Test(expected = InvalidTrainingFileException.class)
@@ -64,7 +68,7 @@ public class TrainerFileLoaderTest {
         out.println("Hello!");
         out.close();
 
-        TrainerFileLoader.loadTrainingPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+        TrainingPlanLoader.loadPlan(MarathonType.HALF, tempFile.getAbsolutePath());
     }
 
     @Test

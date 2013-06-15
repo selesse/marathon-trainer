@@ -1,5 +1,8 @@
 package com.selesse.marathontrainer.resource.language;
 
+import com.selesse.marathontrainer.model.StringUtil;
+import com.selesse.marathontrainer.training.TrainingActivityType;
+
 import java.awt.event.KeyEvent;
 
 public class EnglishLanguageResource implements LanguageResource {
@@ -156,5 +159,19 @@ public class EnglishLanguageResource implements LanguageResource {
     @Override
     public String getBadTrainingFileTitle() {
         return "Bad File";
+    }
+
+    @Override
+    public String printFriendlyString(TrainingActivityType activityType) {
+        switch (activityType) {
+            case NOT_TRAINING_YET:
+                return "Not training yet";
+            case REST:
+                return "Rest";
+            case MARATHON_ALREADY_HAPPENED:
+                return "Marathon already happened";
+            default:
+                return StringUtil.capitalizeAllCaps(activityType.toString());
+        }
     }
 }

@@ -5,14 +5,13 @@ import com.selesse.marathontrainer.training.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
 import java.util.IllegalFormatException;
 import java.util.Scanner;
 
-public class TrainerFileLoader {
-    public static TrainingPlan loadTrainingPlan(MarathonType marathonType, String trainingFilePath)
+public class TrainingPlanLoader {
+    public static TrainingPlan loadPlan(MarathonType marathonType, String trainingFilePath)
             throws FileNotFoundException, InvalidTrainingFileException {
-        TrainingPlan trainingPlan = new TrainingPlan(marathonType, new Date());
+        TrainingPlan trainingPlan = new TrainingPlan(marathonType);
 
         File trainingPlanFile = new File(trainingFilePath);
 
@@ -79,7 +78,15 @@ public class TrainerFileLoader {
     private static TrainingActivity parseActivity(String parseString) {
         String[] tokens = parseString.split(" ");
 
-        TrainingActivity activity = new TrainingActivity(tokens[0]);
+        TrainingActivityType trainingActivityType = TrainingActivityType.UNKNOWN;
+        try {
+            trainingActivityType = TrainingActivityType.valueOf(tokens[0].toUpperCase());
+        }
+        catch (Exception e) {
+            // that's okay, we'll revert to unknown
+        }
+
+        TrainingActivity activity = new TrainingActivity(trainingActivityType);
 
         if (tokens.length > 1) {
             activity.setQuantity(Double.parseDouble(tokens[1]));

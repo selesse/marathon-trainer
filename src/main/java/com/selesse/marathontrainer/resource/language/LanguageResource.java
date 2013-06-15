@@ -1,5 +1,7 @@
 package com.selesse.marathontrainer.resource.language;
 
+import com.selesse.marathontrainer.training.TrainingActivityType;
+
 /**
  * It's advised *not* to perform localization through inheritance. Let's find out why.
  */
@@ -75,4 +77,5 @@ public interface LanguageResource {
     String getStartHintText();
     String getBadFileTypeMessage();
     String getBadFileTypeTitle();
+    String printFriendlyString(TrainingActivityType activityType);
 }

@@ -1,5 +1,7 @@
 package com.selesse.marathontrainer.resource.language;
 
+import com.selesse.marathontrainer.training.TrainingActivityType;
+
 import java.awt.event.KeyEvent;
 
 public class FrenchLanguageResource implements LanguageResource {
@@ -156,5 +158,36 @@ public class FrenchLanguageResource implements LanguageResource {
     @Override
     public String getBadTrainingFileTitle() {
         return "Erreur";
+    }
+
+    @Override
+    public String printFriendlyString(TrainingActivityType activityType) {
+        switch (activityType) {
+            case NOT_TRAINING_YET:
+                return "L'entrainement n'a pas commence.";
+            case REST:
+                return "Repos";
+            case MARATHON_ALREADY_HAPPENED:
+                return "Le marathon a deja eu lieu.";
+            case LONG:
+                return "Course longue";
+            case CHALLENGE:
+                return "Course défie";
+            case FARTLEK:
+                return "Fartlek";
+            case HILLS:
+                return "Cote";
+            case TEMPO:
+                return "Tempo";
+            case SPEED:
+                return "Vitesse";
+            case REGULAR:
+                return "Course regulier";
+            case MARATHON_TODAY:
+                return "Marathon aujourd'hui! Bonne chance!";
+            case UNKNOWN:
+            default:
+                return "???";
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.resource.files.InvalidTrainingFileException;
-import com.selesse.marathontrainer.resource.files.TrainerFileLoader;
+import com.selesse.marathontrainer.resource.files.TrainingPlanLoader;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.training.MarathonType;
 import org.jdesktop.swingx.JXDatePicker;
@@ -57,10 +57,10 @@ public class NewMarathonDialog extends JPanel {
                 }
 
                 if (marathonType == null) {
-                   JOptionPane.showMessageDialog(currentPanel,
-                           resource.getBadMarathonTypeMessage(),
-                           resource.getBadMarathonTypeTitle(),
-                           JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(currentPanel,
+                            resource.getBadMarathonTypeMessage(),
+                            resource.getBadMarathonTypeTitle(),
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -73,7 +73,7 @@ public class NewMarathonDialog extends JPanel {
                     if (chosenFile == null || !chosenFile.exists()) {
                         warnBadFile(resource);
                     }
-                    TrainerFileLoader.loadTrainingPlan(marathonType, chosenFile.getPath());
+                    TrainingPlanLoader.loadPlan(marathonType, chosenFile.getPath());
                 }
                 catch (FileNotFoundException e) {
                     warnBadFile(resource);
@@ -107,7 +107,7 @@ public class NewMarathonDialog extends JPanel {
                     try {
                         chosenFile = fileChooser.getSelectedFile();
                         if (chosenFile != null && chosenFile.exists()) {
-                            TrainerFileLoader.loadTrainingPlan(MarathonType.FULL, chosenFile.getAbsolutePath());
+                            TrainingPlanLoader.loadPlan(MarathonType.FULL, chosenFile.getAbsolutePath());
                         }
                         fileChooserButton.setText(chosenFile.getName());
                     }
