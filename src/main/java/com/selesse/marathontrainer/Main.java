@@ -128,9 +128,16 @@ public class Main {
     private void save() {
         if (settings != null) {
             try {
-                String settingsPath = Settings.getSettingsLocation();
+                // Make sure the settings directory exists
+                File settingsDirectory = new File(Settings.getSettingsDirectory());
+                if (!settingsDirectory.exists()) {
+                    settingsDirectory.mkdir();
+                }
 
+                String settingsPath = Settings.getSettingsLocation();
                 File settingsFile = new File(settingsPath);
+
+                String fullSettingsPath = settingsFile.getAbsolutePath();
 
                 if (!settingsFile.createNewFile()) {
                   // ignore if the delete fails for now
