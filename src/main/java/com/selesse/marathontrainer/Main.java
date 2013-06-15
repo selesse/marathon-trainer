@@ -20,11 +20,16 @@ import java.util.Calendar;
  * Entry point to the application.
  */
 public class Main {
-    private static LanguageResource resources;
-    private static JFrame mainFrame;
-    private static Settings settings;
+    private LanguageResource resources;
+    private JFrame mainFrame;
+    private Settings settings;
 
     public static void main(String[] args) {
+        Main app = new Main();
+        app.start();
+    }
+
+    private void start() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -34,7 +39,7 @@ public class Main {
         });
     }
 
-    private static void createAndShowGUI(Language language) {
+    private void createAndShowGUI(Language language) {
         resources = LanguageResourceFactory.createResource(language);
 
         setSystemLookAndFeel();
@@ -59,7 +64,7 @@ public class Main {
         showFirstScreen();
     }
 
-    private static void showFirstScreen() {
+    private void showFirstScreen() {
         if (settings.getMarathonDate() == null) {
             showFileNewHint();
         }
@@ -68,7 +73,7 @@ public class Main {
         }
     }
 
-    private static void showFileNewHint() {
+    private void showFileNewHint() {
         JPanel pane = new JPanel(new GridLayout(0, 1));
         JLabel startHintText = new JLabel(resources.getStartHintText());
         startHintText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -78,7 +83,7 @@ public class Main {
         mainFrame.getContentPane().add(pane, BorderLayout.CENTER);
     }
 
-    private static void showMarathonTrainer() {
+    private void showMarathonTrainer() {
         mainFrame.getContentPane().removeAll();
         mainFrame.getContentPane().repaint();
         JPanel innerMarathonPanel = new JPanel(new GridBagLayout());
@@ -120,7 +125,7 @@ public class Main {
         mainFrame.getContentPane().add(innerMarathonPanel);
     }
 
-    private static void save() {
+    private void save() {
         if (settings != null) {
             try {
                 String settingsPath = Settings.getSettingsLocation();
@@ -144,7 +149,7 @@ public class Main {
         }
     }
 
-    private static Settings loadOrInitializeSettings() {
+    private Settings loadOrInitializeSettings() {
         try {
             File settingsFile = new File(Settings.getSettingsLocation());
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(settingsFile));
@@ -166,7 +171,7 @@ public class Main {
         return new Settings(Language.ENGLISH);
     }
 
-    private static void setSystemLookAndFeel() {
+    private void setSystemLookAndFeel() {
         final String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
             UIManager.setLookAndFeel(lookAndFeel);
@@ -177,7 +182,7 @@ public class Main {
         JFrame.setDefaultLookAndFeelDecorated(true);
     }
 
-    private static JMenuBar createMenuBar() {
+    private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
         menuBar.add(createSettingsMenu());
@@ -185,7 +190,7 @@ public class Main {
         return menuBar;
     }
 
-    private static JMenu createFileMenu() {
+    private JMenu createFileMenu() {
         JMenu fileMenu = new JMenu(resources.getMenuFileName());
         fileMenu.setMnemonic(resources.getMenuFileMnemonic());
 
@@ -216,7 +221,7 @@ public class Main {
         return fileMenu;
     }
 
-    private static void createNewMarathonDialog() {
+    private void createNewMarathonDialog() {
         final JDialog dialog = new JDialog(mainFrame, resources.getNewMarathonName(), true);
         final NewMarathonDialog marathonDialog = new NewMarathonDialog(resources, settings);
 
@@ -236,7 +241,7 @@ public class Main {
         dialog.setVisible(true);
     }
 
-    private static JMenu createSettingsMenu() {
+    private JMenu createSettingsMenu() {
         JMenu settingsMenu = new JMenu(resources.getMenuSettingsName());
         settingsMenu.setMnemonic(resources.getMenuSettingsMnemonic());
 
