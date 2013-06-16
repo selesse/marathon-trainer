@@ -270,9 +270,12 @@ public class Main {
         final JDialog dialog = new JDialog(mainFrame, resources.getNewMarathonName(), true);
         final NewMarathonDialog marathonDialog = new NewMarathonDialog(resources, settings);
 
+        dialog.setLayout(new BorderLayout());
+
         dialog.add(marathonDialog);
 
-        dialog.setPreferredSize(new Dimension(200, 200));
+        dialog.setPreferredSize(new Dimension(250, 250));
+
 
         marathonDialog.addPropertyChangeListener("finished", new PropertyChangeListener() {
             @Override

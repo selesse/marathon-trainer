@@ -165,11 +165,13 @@ public class EnglishLanguageResource implements LanguageResource {
     public String printFriendlyString(TrainingActivityType activityType) {
         switch (activityType) {
             case NOT_TRAINING_YET:
-                return "Not training yet";
+                return "Not training yet.";
             case REST:
                 return "Rest";
             case MARATHON_ALREADY_HAPPENED:
-                return "Marathon already happened";
+                return "Your marathon already happened.";
+            case MARATHON_TODAY:
+                return "Your marathon is today. Good luck!";
             default:
                 return StringUtil.capitalizeAllCaps(activityType.toString());
         }

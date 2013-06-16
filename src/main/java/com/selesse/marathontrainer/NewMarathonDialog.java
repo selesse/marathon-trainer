@@ -8,6 +8,7 @@ import com.selesse.marathontrainer.training.MarathonType;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -21,6 +22,11 @@ public class NewMarathonDialog extends JPanel {
     private File chosenFile;
 
     public NewMarathonDialog(final LanguageResource resource, final Settings settings) {
+        super(new GridBagLayout());
+
+        final JLabel whenMarathonLabel = new JLabel(resource.getWhenMarathonText());
+        whenMarathonLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
         final ButtonGroup buttonGroup = new ButtonGroup();
 
         final JRadioButton halfMarathonRadioButton = new JRadioButton(resource.getHalfMarathonName());
@@ -120,12 +126,30 @@ public class NewMarathonDialog extends JPanel {
             }
         });
 
-        add(new JLabel(resource.getWhenMarathonText()));
-        add(datePicker);
-        add(halfMarathonRadioButton);
-        add(fullMarathonRadioButton);
-        add(fileChooserButton);
-        add(finishButton);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridwidth = 2;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        add(whenMarathonLabel, constraints);
+
+        constraints.gridy = 1;
+        add(datePicker, constraints);
+
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        add(halfMarathonRadioButton, constraints);
+
+        constraints.gridx = 1;
+        add(fullMarathonRadioButton, constraints);
+
+        constraints.gridwidth = 2;
+        constraints.gridy = 3;
+        constraints.gridx = 0;
+        add(fileChooserButton, constraints);
+
+        constraints.gridy = 4;
+        add(finishButton, constraints);
     }
 
     private void warnInvalidFileType(LanguageResource resource) {
