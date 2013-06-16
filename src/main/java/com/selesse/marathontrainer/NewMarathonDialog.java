@@ -32,7 +32,7 @@ public class NewMarathonDialog extends JPanel {
         halfMarathonRadioButton.setSelected(true);
 
         final JButton finishButton = new JButton(resource.getFinishedText());
-        final JXDatePicker datePicker = new JXDatePicker();
+        final JXDatePicker datePicker = new JXDatePicker(resource.getLanguage().getLocale());
 
         datePicker.addActionListener(new ActionListener() {
             @Override

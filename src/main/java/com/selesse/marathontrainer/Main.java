@@ -53,7 +53,7 @@ public class Main {
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainFrame.setJMenuBar(createMenuBar());
-        mainFrame.setPreferredSize(new Dimension(800, 400));
+        mainFrame.setPreferredSize(new Dimension(800, 500));
 
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
@@ -101,7 +101,7 @@ public class Main {
         monthView.setBoxPaddingY(10);
         monthView.setBackground(innerMarathonPanel.getBackground());
 
-        final JLabel label = new JLabel();
+        final JLabel activityLabel = new JLabel();
 
         monthView.addActionListener(new ActionListener() {
             @Override
@@ -109,7 +109,7 @@ public class Main {
                 Date selectedDate = monthView.getSelectionDate();
                 TrainingActivity trainingActivity = trainingPlan.getActivityForDate(selectedDate);
 
-                label.setText(trainingActivity.getPrintFriendlyString(resources));
+                activityLabel.setText(trainingActivity.getPrintFriendlyString(resources));
 
             }
         });
@@ -127,8 +127,8 @@ public class Main {
         }
         TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
 
-        label.setText(todaysActivity.getPrintFriendlyString(resources));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+        activityLabel.setText(todaysActivity.getPrintFriendlyString(resources));
+        activityLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // set the constraints for the monthView
         GridBagConstraints constraints = new GridBagConstraints();
@@ -141,14 +141,23 @@ public class Main {
 
         innerMarathonPanel.add(monthView, constraints);
 
-        // set the constraints for the label
+        // set the constraints for the activity label
         constraints.gridwidth = 3;
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.weighty = 1.0;
         constraints.insets = new Insets(0, 0, 0, 0);
 
-        innerMarathonPanel.add(label, constraints);
+        innerMarathonPanel.add(activityLabel, constraints);
+
+        JLabel referenceSpeedLabel = new JLabel(trainingPlan.getReferenceString(resources));
+        referenceSpeedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        constraints.gridwidth = 3;
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+
+        innerMarathonPanel.add(referenceSpeedLabel, constraints);
 
         mainFrame.getContentPane().add(innerMarathonPanel);
         mainFrame.setVisible(true);
