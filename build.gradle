@@ -5,6 +5,9 @@ defaultTasks 'clean', 'build', 'copyTrainingPlans'
 sourceCompatibility = 1.7
 version = '1.0'
 
+compileTestJava.options.encoding = 'utf-8'
+compileJava.options.encoding = 'utf-8'
+
 ext {
   releaseDir = "release"
   trainingPlanDir = "training-plan"
