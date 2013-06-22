@@ -7,7 +7,6 @@ import com.selesse.marathontrainer.training.TrainingActivityType;
  */
 public interface LanguageResource {
     String getProgramName();
-    String getLanguageName();
     Language getLanguage();
 
     /**

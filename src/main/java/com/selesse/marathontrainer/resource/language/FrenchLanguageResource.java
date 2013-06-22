@@ -71,11 +71,6 @@ public class FrenchLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String getLanguageName() {
-        return "Francais";
-    }
-
-    @Override
     public String getLoadErrorMessage() {
         return "Il ya eu une erreur de chargement de vos paramètres. Essayez de supprimer le fichier et recommencez.";
     }

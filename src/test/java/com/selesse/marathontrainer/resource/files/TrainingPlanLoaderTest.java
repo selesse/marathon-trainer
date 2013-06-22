@@ -70,7 +70,7 @@ public class TrainingPlanLoaderTest {
     }
 
     @Test(expected = InvalidTrainingFileException.class)
-    public void testBadTrainingFile() throws IOException, FileNotFoundException, InvalidTrainingFileException {
+    public void testBadTrainingFile() throws IOException, InvalidTrainingFileException {
         File tempFile = File.createTempFile("foo", "bar");
         tempFile.deleteOnExit();
 

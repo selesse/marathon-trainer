@@ -18,12 +18,7 @@ public class TrainingPlanLoader {
 
         Scanner fileScanner = new Scanner(trainingPlanFile);
 
-        try {
-            parseFile(fileScanner, trainingPlan);
-        }
-        catch (InvalidTrainingFileException e) {
-            throw e;
-        }
+        parseFile(fileScanner, trainingPlan);
 
         if (trainingPlan.getTrainingWeekList().size() == 0) {
             throw new InvalidTrainingFileException();

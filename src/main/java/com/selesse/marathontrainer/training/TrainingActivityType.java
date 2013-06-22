@@ -12,5 +12,5 @@ public enum TrainingActivityType {
     NOT_TRAINING_YET,
     MARATHON_TODAY,
     MARATHON_ALREADY_HAPPENED,
-    UNKNOWN;
+    UNKNOWN
 }

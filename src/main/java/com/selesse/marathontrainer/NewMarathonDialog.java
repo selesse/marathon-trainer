@@ -1,7 +1,6 @@
 package com.selesse.marathontrainer;
 
 import com.selesse.marathontrainer.model.Settings;
-import com.selesse.marathontrainer.resource.files.InvalidTrainingFileException;
 import com.selesse.marathontrainer.resource.files.TrainingPlanLoader;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.training.MarathonType;
@@ -12,13 +11,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Date;
 
 public class NewMarathonDialog extends JPanel {
-    private JFileChooser fileChooser;
-    private JButton fileChooserButton;
-    private NewMarathonDialog currentPanel = this;
+    private final JFileChooser fileChooser;
+    private final JButton fileChooserButton;
+    private final NewMarathonDialog currentPanel = this;
     private File chosenFile;
 
     public NewMarathonDialog(final LanguageResource resource, final Settings settings) {
