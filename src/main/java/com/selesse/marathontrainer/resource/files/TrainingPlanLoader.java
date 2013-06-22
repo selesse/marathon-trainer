@@ -1,5 +1,6 @@
 package com.selesse.marathontrainer.resource.files;
 
+import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.model.Weekday;
 import com.selesse.marathontrainer.training.*;
 
@@ -9,25 +10,51 @@ import java.util.IllegalFormatException;
 import java.util.Scanner;
 
 public class TrainingPlanLoader {
-    public static TrainingPlan loadPlan(MarathonType marathonType, String trainingFilePath)
+    public static TrainingPlan loadPlan(Settings settings)
             throws FileNotFoundException, InvalidTrainingFileException {
-        TrainingPlan trainingPlan = new TrainingPlan(marathonType);
+        TrainingPlan trainingPlan = new TrainingPlan(settings.getMarathonType());
 
-        File trainingPlanFile = new File(trainingFilePath);
+        File trainingPlanFile = new File(settings.getTrainingPlanPath());
 
         Scanner fileScanner = new Scanner(trainingPlanFile);
 
-        parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
-        parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+        try {
+            parseFile(fileScanner, trainingPlan);
+        }
+        catch (InvalidTrainingFileException e) {
+            throw e;
+        }
 
         if (trainingPlan.getTrainingWeekList().size() == 0) {
             throw new InvalidTrainingFileException();
         }
 
+        trainingPlan.setMarathonDate(settings.getMarathonDate());
+
         return trainingPlan;
     }
 
-    private static void parseAndSetupTrainingWeeks(Scanner fileScanner, TrainingPlan trainingPlan) {
+    private static void parseFile(Scanner fileScanner, TrainingPlan trainingPlan) throws InvalidTrainingFileException {
+        // the order matters
+        parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
+        parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+    }
+
+    public static boolean isValidTrainingPlan(File trainingPlanFile) {
+        try {
+            Scanner fileScanner = new Scanner(trainingPlanFile);
+            TrainingPlan trainingPlan = new TrainingPlan(MarathonType.FULL);
+
+            parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
+            parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void parseAndSetupTrainingWeeks(Scanner fileScanner, TrainingPlan trainingPlan) throws InvalidTrainingFileException {
         while (fileScanner.hasNext()) {
             TrainingWeek trainingWeek = new TrainingWeek();
 
@@ -42,7 +69,7 @@ public class TrainingPlanLoader {
                 }
             }
             else {
-                // TODO handle gracefully
+                throw new InvalidTrainingFileException("Bad number of weekdays");
             }
             if (!trainingWeek.isEmpty()) {
                 trainingPlan.addTrainingWeek(trainingWeek);

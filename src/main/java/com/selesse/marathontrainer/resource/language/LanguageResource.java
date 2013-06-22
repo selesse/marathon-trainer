@@ -75,7 +75,5 @@ public interface LanguageResource {
     String getBadTrainingFileMessage();
     String getBadTrainingFileTitle();
     String getStartHintText();
-    String getBadFileTypeMessage();
-    String getBadFileTypeTitle();
     String printFriendlyString(TrainingActivityType activityType);
 }

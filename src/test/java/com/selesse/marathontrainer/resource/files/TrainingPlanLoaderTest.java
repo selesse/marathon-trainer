@@ -1,6 +1,8 @@
 package com.selesse.marathontrainer.resource.files;
 
+import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.model.Weekday;
+import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.training.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +48,11 @@ public class TrainingPlanLoaderTest {
 
         out.close();
 
-        return TrainingPlanLoader.loadPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+        Settings settings = new Settings(Language.ENGLISH);
+        settings.setMarathonType(MarathonType.HALF);
+        settings.setTrainingPlanPath(tempFile.getAbsolutePath());
+
+        return TrainingPlanLoader.loadPlan(settings);
     }
 
     @Before
@@ -56,7 +62,11 @@ public class TrainingPlanLoaderTest {
 
     @Test(expected = FileNotFoundException.class)
     public void testNonExistentFileThrowsException() throws FileNotFoundException, InvalidTrainingFileException {
-        TrainingPlanLoader.loadPlan(MarathonType.HALF, "./foobar");
+        Settings settings = new Settings(Language.ENGLISH);
+        settings.setMarathonType(MarathonType.HALF);
+        settings.setTrainingPlanPath("./foobar");
+
+        TrainingPlanLoader.loadPlan(settings);
     }
 
     @Test(expected = InvalidTrainingFileException.class)
@@ -68,7 +78,11 @@ public class TrainingPlanLoaderTest {
         out.println("Hello!");
         out.close();
 
-        TrainingPlanLoader.loadPlan(MarathonType.HALF, tempFile.getAbsolutePath());
+        Settings settings = new Settings(Language.ENGLISH);
+        settings.setMarathonType(MarathonType.HALF);
+        settings.setTrainingPlanPath(tempFile.getAbsolutePath());
+
+        TrainingPlanLoader.loadPlan(settings);
     }
 
     @Test

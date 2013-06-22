@@ -142,16 +142,6 @@ public class EnglishLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String getBadFileTypeMessage() {
-        return "That is not a valid training plan file.";
-    }
-
-    @Override
-    public String getBadFileTypeTitle() {
-        return "Bad file type";
-    }
-
-    @Override
     public String getBadTrainingFileMessage() {
         return "Please pick a valid training plan file.";
     }

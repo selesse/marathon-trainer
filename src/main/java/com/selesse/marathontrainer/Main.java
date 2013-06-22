@@ -115,16 +115,7 @@ public class Main {
         });
 
         // set up the label by getting today's activity
-        if (trainingPlan == null) {
-            try {
-                trainingPlan = TrainingPlanLoader.loadPlan(settings.getMarathonType(), settings.getTrainingPlanPath());
-                trainingPlan.setMarathonDate(settings.getMarathonDate());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (InvalidTrainingFileException e) {
-                e.printStackTrace();
-            }
-        }
+        loadTrainingPlan();
         TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
 
         activityLabel.setText(todaysActivity.getPrintFriendlyString(resources));
@@ -270,32 +261,30 @@ public class Main {
         final JDialog dialog = new JDialog(mainFrame, resources.getNewMarathonName(), true);
         final NewMarathonDialog marathonDialog = new NewMarathonDialog(resources, settings);
 
-        dialog.setLayout(new BorderLayout());
-
         dialog.add(marathonDialog);
-
         dialog.setPreferredSize(new Dimension(250, 250));
-
 
         marathonDialog.addPropertyChangeListener("finished", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 dialog.dispose();
-                try {
-                    trainingPlan = TrainingPlanLoader.loadPlan(settings.getMarathonType(),
-                            settings.getTrainingPlanPath());
-                    trainingPlan.setMarathonDate(settings.getMarathonDate());
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InvalidTrainingFileException e) {
-                    e.printStackTrace();
-                }
+                loadTrainingPlan();
                 showMarathonTrainer();
             }
         });
 
         dialog.pack();
         dialog.setVisible(true);
+    }
+
+    private void loadTrainingPlan() {
+        try {
+            trainingPlan = TrainingPlanLoader.loadPlan(settings);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidTrainingFileException e) {
+            e.printStackTrace();
+        }
     }
 
     private JMenu createSettingsMenu() {

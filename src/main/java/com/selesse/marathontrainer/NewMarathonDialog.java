@@ -75,18 +75,8 @@ public class NewMarathonDialog extends JPanel {
                     return;
                 }
 
-                try {
-                    if (chosenFile == null || !chosenFile.exists()) {
-                        warnBadFile(resource);
-                    }
-                    TrainingPlanLoader.loadPlan(marathonType, chosenFile.getPath());
-                }
-                catch (FileNotFoundException e) {
+                if (isInvalidTrainingPlanFile()) {
                     warnBadFile(resource);
-                    return;
-                }
-                catch (InvalidTrainingFileException e) {
-                    warnInvalidFileType(resource);
                     return;
                 }
 
@@ -110,18 +100,11 @@ public class NewMarathonDialog extends JPanel {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     chosenFile = fileChooser.getSelectedFile();
 
-                    try {
-                        chosenFile = fileChooser.getSelectedFile();
-                        if (chosenFile != null && chosenFile.exists()) {
-                            TrainingPlanLoader.loadPlan(MarathonType.FULL, chosenFile.getAbsolutePath());
-                        }
-                        fileChooserButton.setText(chosenFile.getName());
-                    }
-                    catch (InvalidTrainingFileException e) {
-                        warnInvalidFileType(resource);
-                    } catch (FileNotFoundException e) {
+                    if (isInvalidTrainingPlanFile()) {
                         warnBadFile(resource);
+                        return;
                     }
+                    fileChooserButton.setText(chosenFile.getName());
                 }
             }
         });
@@ -152,11 +135,13 @@ public class NewMarathonDialog extends JPanel {
         add(finishButton, constraints);
     }
 
-    private void warnInvalidFileType(LanguageResource resource) {
-        JOptionPane.showMessageDialog(currentPanel,
-                resource.getBadFileTypeMessage(),
-                resource.getBadFileTypeTitle(),
-                JOptionPane.ERROR_MESSAGE);
+    private boolean isInvalidTrainingPlanFile() {
+        return chosenFile == null || !chosenFile.exists() || !TrainingPlanLoader.isValidTrainingPlan(chosenFile);
+    }
+
+
+    private boolean isBadMarathonDate(Date date) {
+        return date == null || date.before(new Date());
     }
 
     private void warnBadMarathonDate(LanguageResource resource) {
@@ -172,9 +157,4 @@ public class NewMarathonDialog extends JPanel {
                 resource.getBadTrainingFileTitle(),
                 JOptionPane.ERROR_MESSAGE);
     }
-
-    private boolean isBadMarathonDate(Date date) {
-        return date == null || date.before(new Date());
-    }
-
 }
