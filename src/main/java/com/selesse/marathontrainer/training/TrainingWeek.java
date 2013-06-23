@@ -13,7 +13,7 @@ public class TrainingWeek {
     }
 
     public void setActivity(Weekday weekday, TrainingActivity activity) {
-        int weekIndex = weekday.ordinal();
+        int weekIndex = weekday.toArrayValue();
 
         if (weekIndex >= 0 && weekIndex < activityList.size()) {
             if (activityList.get(weekIndex) != null) {
@@ -25,7 +25,7 @@ public class TrainingWeek {
     }
 
     public TrainingActivity getActivity(Weekday weekday) {
-        return activityList.get(weekday.ordinal());
+        return activityList.get(weekday.toArrayValue());
     }
 
     public boolean isEmpty() {
