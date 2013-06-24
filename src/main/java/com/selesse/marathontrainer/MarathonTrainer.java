@@ -1,5 +1,6 @@
 package com.selesse.marathontrainer;
 
+import com.selesse.marathontrainer.model.DateUtils;
 import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.resource.files.InvalidTrainingFileException;
 import com.selesse.marathontrainer.resource.files.TrainingPlanLoader;
@@ -8,6 +9,7 @@ import com.selesse.marathontrainer.resource.language.LanguageResource;
 import com.selesse.marathontrainer.resource.language.LanguageResourceFactory;
 import com.selesse.marathontrainer.training.TrainingActivity;
 import com.selesse.marathontrainer.training.TrainingPlan;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMonthView;
 
 import javax.swing.*;
@@ -17,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -68,7 +71,7 @@ public class MarathonTrainer implements Runnable {
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainFrame.setJMenuBar(createMenuBar());
-        mainFrame.setPreferredSize(new Dimension(800, 500));
+        mainFrame.setPreferredSize(new Dimension(1000, 500));
 
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
@@ -82,90 +85,6 @@ public class MarathonTrainer implements Runnable {
         });
 
         showFirstScreen();
-    }
-
-    private void showFirstScreen() {
-        if (settings.getMarathonDate() == null) {
-            showFileNewHint();
-        }
-        else {
-            showMarathonTrainer();
-        }
-    }
-
-    private void showFileNewHint() {
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        JLabel startHintText = new JLabel(resources.getStartHintText());
-        startHintText.setHorizontalAlignment(SwingConstants.CENTER);
-
-        pane.add(startHintText);
-
-        mainFrame.getContentPane().add(pane, BorderLayout.CENTER);
-    }
-
-    private void showMarathonTrainer() {
-        mainFrame.getContentPane().removeAll();
-        mainFrame.getContentPane().repaint();
-        JPanel innerMarathonPanel = new JPanel(new GridBagLayout());
-
-        // set up the month view
-        final JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
-        monthView.setFirstDayOfWeek(Calendar.SUNDAY);
-        monthView.setTraversable(true);
-        monthView.setBoxPaddingX(5);
-        monthView.setBoxPaddingY(10);
-        monthView.setBackground(innerMarathonPanel.getBackground());
-
-        final JLabel activityLabel = new JLabel();
-
-        monthView.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date selectedDate = monthView.getSelectionDate();
-                TrainingActivity trainingActivity = trainingPlan.getActivityForDate(selectedDate);
-
-                activityLabel.setText(trainingActivity.getPrintFriendlyString(resources));
-            }
-        });
-
-        // set up the label by getting today's activity
-        loadTrainingPlan();
-        TrainingActivity todaysActivity = trainingPlan.getActivityForDate(new Date());
-
-        activityLabel.setText(todaysActivity.getPrintFriendlyString(resources));
-        activityLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        // set the constraints for the monthView
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.insets = new Insets(20, 0, 0, 0);
-
-        innerMarathonPanel.add(monthView, constraints);
-
-        // set the constraints for the activity label
-        constraints.gridwidth = 3;
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.weighty = 1.0;
-        constraints.insets = new Insets(0, 0, 0, 0);
-
-        innerMarathonPanel.add(activityLabel, constraints);
-
-        JLabel referenceSpeedLabel = new JLabel(trainingPlan.getReferenceString(resources));
-        referenceSpeedLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        constraints.gridwidth = 3;
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-
-        innerMarathonPanel.add(referenceSpeedLabel, constraints);
-
-        mainFrame.getContentPane().add(innerMarathonPanel);
-        mainFrame.setVisible(true);
     }
 
     private void save() {
@@ -197,11 +116,184 @@ public class MarathonTrainer implements Runnable {
         }
     }
 
+    private void loadTrainingPlan() {
+        try {
+            trainingPlan = TrainingPlanLoader.loadPlan(settings);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidTrainingFileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showFirstScreen() {
+        if (settings.getMarathonDate() == null) {
+            showFileNewHint();
+        }
+        else {
+            showMarathonTrainer();
+        }
+    }
+
+    private void showFileNewHint() {
+        JPanel pane = new JPanel(new GridLayout(0, 1));
+        JLabel startHintText = new JLabel(resources.getStartHintText());
+        startHintText.setHorizontalAlignment(SwingConstants.CENTER);
+
+        pane.add(startHintText);
+
+        mainFrame.getContentPane().add(pane, BorderLayout.CENTER);
+    }
+
+    private void showMarathonTrainer() {
+        mainFrame.getContentPane().removeAll();
+        mainFrame.getContentPane().repaint();
+        // panel that will contain all the components
+        JPanel innerMarathonPanel = new JPanel(new GridBagLayout());
+
+        loadTrainingPlan();
+
+        // set up the month view
+        final JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
+        monthView.setFirstDayOfWeek(Calendar.SUNDAY);
+        monthView.setTraversable(true);
+        monthView.setBoxPaddingX(5);
+        monthView.setBoxPaddingY(10);
+        monthView.setBackground(innerMarathonPanel.getBackground());
+
+        // make sure the date isn't null, it's used later
+        if (monthView.getSelectionDate() == null) {
+            monthView.setSelectionDate(new Date());
+        }
+
+        // initialize all the labels
+        final JLabel activityLabel = new JLabel();
+        final JLabel tomorrowsActivityLabel = new JLabel();
+        final JLabel daysUntilMarathonLabel = new JLabel();
+        final JXLabel referenceSpeedsLabel = new JXLabel(trainingPlan.getReferenceString(resources));
+
+        activityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        tomorrowsActivityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        daysUntilMarathonLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        referenceSpeedsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        referenceSpeedsLabel.setLineWrap(true);
+
+        monthView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateActivityInfoLabels(monthView.getSelectionDate(), activityLabel, tomorrowsActivityLabel);
+            }
+        });
+
+        updateActivityInfoLabels(monthView.getSelectionDate(), activityLabel, tomorrowsActivityLabel);
+        daysUntilMarathonLabel.setText(getDaysUntilMarathonLabel(getDaysUntilMarathon(trainingPlan)));
+
+        // set the constraints for the all the components and add them to the panel
+        // in this case, we're handling the calendar view
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridwidth = 3;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(20, 0, 0, 0);
+
+        innerMarathonPanel.add(monthView, constraints);
+
+        // set the constraints for the "days until marathon" label (1/3)
+        constraints.weightx = 0.5;
+        constraints.gridwidth = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.insets = new Insets(0, 0, 0, 0);
+
+        innerMarathonPanel.add(daysUntilMarathonLabel, constraints);
+
+        // set the constraints for today's activity label (2/3)
+        constraints.weightx = 0.5;
+        constraints.gridwidth = 1;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+
+        innerMarathonPanel.add(activityLabel, constraints);
+
+        // set the constraints for tomorrow's activity label (3/3)
+        constraints.weightx = 0.5;
+        constraints.gridwidth = 1;
+        constraints.gridx = 2;
+        constraints.gridy = 1;
+
+        innerMarathonPanel.add(tomorrowsActivityLabel, constraints);
+
+        // set the constraints for the reference speeds label
+        constraints.gridwidth = 3;
+        constraints.weightx = 0;
+        constraints.weighty = 1.0;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.insets = new Insets(0, 20, 20, 0);
+
+        innerMarathonPanel.add(referenceSpeedsLabel, constraints);
+
+        mainFrame.getContentPane().add(innerMarathonPanel);
+        mainFrame.setVisible(true);
+    }
+
+    private void updateActivityInfoLabels(Date selectedDate, JLabel activityLabel, JLabel tomorrowsActivityLabel) {
+        Date dayAfterSelectedDate = DateUtils.getNextDay(selectedDate);
+        TrainingActivity trainingActivity = trainingPlan.getActivityForDate(selectedDate);
+        TrainingActivity tomorrowsActivity = trainingPlan.getActivityForDate(dayAfterSelectedDate);
+
+        String activityString, tomorrowActivityString;
+
+        // if it's today, say "Today:", otherwise say "dd/MM/yyyy:"
+        if (DateUtils.isToday(selectedDate)) {
+            activityString = getTodayActivityLabel(trainingActivity.toLanguageString(resources));
+        }
+        else {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            activityString = getDayActivityLabel(formatter.format(selectedDate),
+                    trainingActivity.toLanguageString(resources));
+        }
+
+        tomorrowActivityString = getTomorrowActivityLabel(tomorrowsActivity.toLanguageString(resources));
+
+        activityLabel.setText(activityString);
+        tomorrowsActivityLabel.setText(tomorrowActivityString);
+    }
+
+    private int getDaysUntilMarathon(TrainingPlan trainingPlan) {
+        return DateUtils.getDaysBetween(trainingPlan.getMarathonDate(), new Date());
+    }
+
+    /**
+     * The two line template string, i.e. bold header, newline, text
+     */
+    private String getTwoLineTemplateString() {
+        return "<html> <p align=\"center\"> <b> %s: </b> <br/> <p align=\"center\"> %s </p> </p> </html>";
+    }
+
+    private String getDayActivityLabel(String day, String activityText) {
+        return String.format(getTwoLineTemplateString(), day, activityText);
+    }
+
+    private String getTodayActivityLabel(String activityText) {
+        return String.format(getTwoLineTemplateString(), resources.getTodayString(), activityText);
+    }
+
+    private String getTomorrowActivityLabel(String activityText) {
+        return String.format(getTwoLineTemplateString(), resources.getDayAfterString(), activityText);
+    }
+
+    private String getDaysUntilMarathonLabel(int days) {
+        return String.format(getTwoLineTemplateString(), resources.getDaysUntilMarathonString(), "" + days);
+    }
+
     private void setSystemLookAndFeel() {
         final String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch (Exception e) {
+            // highly unlikely this will happen, we're just setting the defaults
             e.printStackTrace();
         }
 
@@ -265,16 +357,6 @@ public class MarathonTrainer implements Runnable {
 
         dialog.pack();
         dialog.setVisible(true);
-    }
-
-    private void loadTrainingPlan() {
-        try {
-            trainingPlan = TrainingPlanLoader.loadPlan(settings);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidTrainingFileException e) {
-            e.printStackTrace();
-        }
     }
 
     private JMenu createSettingsMenu() {

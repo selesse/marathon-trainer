@@ -48,6 +48,7 @@ Acceptable run types are the following:
   * Hills
   * Fartlek
   * Long
+  * Marathon (the speed you should run at the marathon)
   * Rest
 
 Note that the first part of the file should be the run type followed by a time

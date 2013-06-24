@@ -161,4 +161,19 @@ public class EnglishLanguageResource implements LanguageResource {
                 return StringUtil.capitalizeAllCaps(activityType.toString());
         }
     }
+
+    @Override
+    public String getTodayString() {
+        return "Today";
+    }
+
+    @Override
+    public String getDayAfterString() {
+        return "Day after";
+    }
+
+    @Override
+    public String getDaysUntilMarathonString() {
+        return "Days until marathon";
+    }
 }

@@ -9,6 +9,7 @@ public enum TrainingActivityType {
     REGULAR,
     SPEED,
     CHALLENGE,
+    MARATHON,
     NOT_TRAINING_YET,
     MARATHON_TODAY,
     MARATHON_ALREADY_HAPPENED,

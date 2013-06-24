@@ -15,6 +15,9 @@ public enum Weekday {
         this.arrayValue = arrayValue;
     }
 
+    /**
+     * To array value, i.e. 0-indexed.
+     */
     public int toArrayValue() {
         return arrayValue;
     }

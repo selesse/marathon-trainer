@@ -12,12 +12,12 @@ public enum Language {
     }
 
     public static Language getLanguageFromLocaleString(String localeString) {
-        localeString = removeAccents(localeString).toLowerCase();
+        localeString = removeAccents(localeString);
 
-        if (localeString.equals("english")) {
+        if (localeString.equalsIgnoreCase("English")) {
             return ENGLISH;
         }
-        if (localeString.equals("francais")) {
+        if (localeString.equalsIgnoreCase("Francais")) {
             return FRENCH;
         }
         return ENGLISH;

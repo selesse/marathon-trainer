@@ -100,12 +100,12 @@ public class TrainingPlanLoader {
     private static TrainingActivity parseActivity(String parseString) {
         String[] tokens = parseString.split(" ");
 
-        TrainingActivityType trainingActivityType = TrainingActivityType.UNKNOWN;
+        TrainingActivityType trainingActivityType;
         try {
             trainingActivityType = TrainingActivityType.valueOf(tokens[0].toUpperCase());
         }
         catch (Exception e) {
-            // that's okay, we'll revert to unknown
+            trainingActivityType = TrainingActivityType.UNKNOWN;
         }
 
         TrainingActivity activity = new TrainingActivity(trainingActivityType);

@@ -137,7 +137,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getBadTrainingFileMessage() {
-        return "Choisissez un fichier (plan d'entrainement) qui existe.";
+        return "Choisissez un plan d'entrainement valide.";
     }
 
     @Override
@@ -170,9 +170,26 @@ public class FrenchLanguageResource implements LanguageResource {
                 return "Course regulier";
             case MARATHON_TODAY:
                 return "Marathon aujourd'hui! Bonne chance!";
+            case MARATHON:
+                return "Marathon";
             case UNKNOWN:
             default:
                 return "???";
         }
+    }
+
+    @Override
+    public String getTodayString() {
+        return "Aujourd'hui";
+    }
+
+    @Override
+    public String getDayAfterString() {
+        return "Lendemain";
+    }
+
+    @Override
+    public String getDaysUntilMarathonString() {
+        return "Jours avant le marathon";
     }
 }

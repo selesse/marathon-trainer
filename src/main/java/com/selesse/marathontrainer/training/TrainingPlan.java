@@ -1,5 +1,6 @@
 package com.selesse.marathontrainer.training;
 
+import com.selesse.marathontrainer.model.DateUtils;
 import com.selesse.marathontrainer.model.Weekday;
 import com.selesse.marathontrainer.resource.language.LanguageResource;
 
@@ -69,7 +70,7 @@ public class TrainingPlan {
         calendar.set(Calendar.MILLISECOND, 0);            // set millis in second
 
         // find difference in days (normalize to same time)
-        int dayDifference = getDaysBetween(calendar.getTime(), date);
+        int dayDifference = DateUtils.getDaysBetween(calendar.getTime(), date);
 
         if (dayDifference == 0) {
             return new TrainingActivity(TrainingActivityType.MARATHON_TODAY);
@@ -95,12 +96,6 @@ public class TrainingPlan {
         TrainingWeek trainingWeek = trainingWeekList.get(calculatedWeek);
 
         return trainingWeek.getActivity(Weekday.values()[weekDay]);
-    }
-
-    private int getDaysBetween(Date firstDate, Date secondDate) {
-        long millisecondDiff = firstDate.getTime() - secondDate.getTime();
-
-        return (int) Math.ceil((millisecondDiff / (1000 * 60 * 60 * 24.0)));
     }
 
     public String getReferenceString(LanguageResource resource) {

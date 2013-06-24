@@ -55,7 +55,7 @@ public class TrainingActivity {
                 '}';
     }
 
-    public String getPrintFriendlyString(LanguageResource resources) {
+    public String toLanguageString(LanguageResource resources) {
         String baseString = resources.printFriendlyString(trainingActivityType);
         switch (trainingActivityType) {
             case REST:

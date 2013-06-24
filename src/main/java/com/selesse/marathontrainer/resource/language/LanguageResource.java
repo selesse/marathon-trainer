@@ -6,7 +6,14 @@ import com.selesse.marathontrainer.training.TrainingActivityType;
  * It's advised *not* to perform localization through inheritance. Let's find out why.
  */
 public interface LanguageResource {
+    /**
+     * Get the name of this program.
+     */
     String getProgramName();
+
+    /**
+     * Get the {@link Language} for a particular Language resource.
+     */
     Language getLanguage();
 
     /**
@@ -62,6 +69,7 @@ public interface LanguageResource {
      * Title window of the load error message.
      */
     String getLoadErrorTitle();
+
     String getNewMarathonName();
     int getNewMarathonMnemonic();
     String getFileChooserText();
@@ -75,4 +83,7 @@ public interface LanguageResource {
     String getBadTrainingFileTitle();
     String getStartHintText();
     String printFriendlyString(TrainingActivityType activityType);
+    String getTodayString();
+    String getDayAfterString();
+    String getDaysUntilMarathonString();
 }
