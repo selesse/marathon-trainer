@@ -22,12 +22,17 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MarathonTrainer implements Runnable {
     private LanguageResource resources;
     private JFrame mainFrame;
     private Settings settings;
     private TrainingPlan trainingPlan;
+    private JXMonthView monthView;
+    private JLabel tomorrowsActivityLabel;
+    private JLabel activityLabel;
 
     @Override
     public void run() {
@@ -36,6 +41,7 @@ public class MarathonTrainer implements Runnable {
             public void run() {
                 settings = loadOrInitializeSettings();
                 createAndShowGUI(settings.getLanguage());
+                updateSelectedDayEveryDay();
             }
         });
     }
@@ -154,7 +160,7 @@ public class MarathonTrainer implements Runnable {
         loadTrainingPlan();
 
         // set up the month view
-        final JXMonthView monthView = new JXMonthView(resources.getLanguage().getLocale());
+        monthView = new JXMonthView(resources.getLanguage().getLocale());
         monthView.setFirstDayOfWeek(Calendar.SUNDAY);
         monthView.setTraversable(true);
         monthView.setBoxPaddingX(5);
@@ -167,8 +173,8 @@ public class MarathonTrainer implements Runnable {
         }
 
         // initialize all the labels
-        final JLabel activityLabel = new JLabel();
-        final JLabel tomorrowsActivityLabel = new JLabel();
+        activityLabel = new JLabel();
+        tomorrowsActivityLabel = new JLabel();
         final JLabel daysUntilMarathonLabel = new JLabel();
         final JXLabel referenceSpeedsLabel = new JXLabel(trainingPlan.getReferenceString(resources));
 
@@ -398,5 +404,25 @@ public class MarathonTrainer implements Runnable {
         });
 
         return settingsMenu;
+    }
+
+    private void updateSelectedDayEveryDay() {
+        Date today = new Date();
+        long timeUntilEndOfDay = DateUtils.getNextDayAtMidnight(today).getTime() - today.getTime();
+
+        TimerTask updateToday = new TimerTask() {
+            @Override
+            public void run() {
+                if (monthView != null) {
+                    Date newDay = new Date();
+                    monthView.setSelectionDate(newDay);
+                    updateActivityInfoLabels(newDay, activityLabel, tomorrowsActivityLabel);
+                }
+            }
+        };
+
+        Timer timer = new Timer();
+        // starting tomorrow, every day we'll try updating the selection date
+        timer.scheduleAtFixedRate(updateToday, timeUntilEndOfDay, 86400 * 1000);
     }
 }

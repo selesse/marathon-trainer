@@ -29,6 +29,20 @@ public class DateUtils {
     }
 
     /**
+     * Get the next day at midnight.
+     */
+    public static Date getNextDayAtMidnight(Date date) {
+        Date tomorrow = getNextDay(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(tomorrow);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    /**
      * Check whether the {@link Date} is today.
      */
     public static boolean isToday(Date referenceDate) {
