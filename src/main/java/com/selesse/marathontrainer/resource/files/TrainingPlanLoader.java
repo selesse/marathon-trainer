@@ -6,12 +6,10 @@ import com.selesse.marathontrainer.training.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.IllegalFormatException;
 import java.util.Scanner;
 
 public class TrainingPlanLoader {
-    public static TrainingPlan loadPlan(Settings settings)
-            throws FileNotFoundException, InvalidTrainingFileException {
+    public static TrainingPlan loadPlan(Settings settings) throws FileNotFoundException, InvalidTrainingFileException {
         TrainingPlan trainingPlan = new TrainingPlan(settings.getMarathonType());
 
         File trainingPlanFile = new File(settings.getTrainingPlanPath());
@@ -64,7 +62,7 @@ public class TrainingPlanLoader {
                 }
             }
             else {
-                throw new InvalidTrainingFileException("Bad number of weekdays");
+                throw new InvalidTrainingFileException("Bad number of weekdays.");
             }
             if (!trainingWeek.isEmpty()) {
                 trainingPlan.addTrainingWeek(trainingWeek);
@@ -88,7 +86,7 @@ public class TrainingPlanLoader {
                 try {
                     trainingActivityType = TrainingActivityType.valueOf(activityType);
                 }
-                catch (IllegalFormatException e) {
+                catch (IllegalArgumentException e) {
                     trainingActivityType = TrainingActivityType.UNKNOWN;
                 }
 

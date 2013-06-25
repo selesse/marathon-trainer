@@ -8,18 +8,23 @@ import java.util.Date;
  */
 public class DateUtils {
 
-     /**
-     * Returns a ceiling of the days between an older and younger date. The order is important
+    public static final int MILLISECONDS_PER_DAY = 86400 * 1000;
+
+    /**
+     * Returns a ceiling of the days between a younger and an older date. The order is important
      * if you care about the sign of the result.
+     *
+     * Note that this will give you 1 even if there's a 1 millisecond difference between
+     * the dates.
      */
-    public static int getDaysBetween(Date olderDate, Date youngerDate) {
+    public static int getNumberOfDaysBetween(Date youngerDate, Date olderDate) {
         long millisecondDiff = olderDate.getTime() - youngerDate.getTime();
 
         return (int) Math.ceil((millisecondDiff / (1000 * 60 * 60 * 24.0)));
     }
 
     /**
-     * Get the next day from a day... i.e. tomorrow.
+     * Get the next day from a date, i.e. that day + 1 calendar day.
      */
     public static Date getNextDay(Date date) {
         Calendar calendar = Calendar.getInstance();

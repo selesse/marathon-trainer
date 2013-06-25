@@ -70,7 +70,7 @@ public class TrainingPlan {
         calendar.set(Calendar.MILLISECOND, 0);            // set millis in second
 
         // find difference in days (normalize to same time)
-        int dayDifference = DateUtils.getDaysBetween(calendar.getTime(), date);
+        int dayDifference = DateUtils.getNumberOfDaysBetween(date, calendar.getTime());
 
         if (dayDifference == 0) {
             return new TrainingActivity(TrainingActivityType.MARATHON_TODAY);

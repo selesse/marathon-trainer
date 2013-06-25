@@ -13,16 +13,6 @@ public class TrainingActivity {
         this.trainingActivityType = activityType;
     }
 
-    public TrainingActivity(TrainingActivityType activityType, int quantity) {
-        this(activityType);
-        this.quantity = quantity;
-    }
-
-    public TrainingActivity(TrainingActivityType activityTypee, int quantity, int numberOfTimes) {
-        this(activityTypee, quantity);
-        this.numberOfTimes = numberOfTimes;
-    }
-
     public double getQuantity() {
         return quantity;
     }
@@ -55,6 +45,9 @@ public class TrainingActivity {
                 '}';
     }
 
+    /**
+     * Return a language-specific, print-friendly representation of a {@link TrainingActivity}.
+     */
     public String toLanguageString(LanguageResource resources) {
         String baseString = resources.printFriendlyString(trainingActivityType);
         switch (trainingActivityType) {
@@ -65,9 +58,9 @@ public class TrainingActivity {
             case UNKNOWN:
                 return baseString;
             case SPEED:
-                return baseString + ": " + numberOfTimes + " x " + quantity + " KM";
+                return numberOfTimes + " x " + quantity + " KM " + baseString;
             default:
-                return baseString + ": " + quantity + " KM";
+                return quantity + " KM " + baseString;
         }
     }
 }

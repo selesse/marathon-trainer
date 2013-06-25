@@ -42,7 +42,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getMenuSettingsName() {
-        return "Parametres";
+        return "Paramètres";
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getLoadErrorMessage() {
-        return "Il ya eu une erreur de chargement de vos paramètres. Essayez de supprimer le fichier et recommencez.";
+        return "Il y a eu une erreur de chargement de vos paramètres. Essayez de supprimer le fichier et recommencez.";
     }
 
     @Override
@@ -92,7 +92,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getWhenMarathonText() {
-        return "Quelle est la date de ton marathon?";
+        return "Quelle est la date du marathon?";
     }
 
     @Override
@@ -102,7 +102,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getFileChooserText() {
-        return "Choisir plan d'entrainement";
+        return "Choisir plan d'entraînement";
     }
 
     @Override
@@ -117,7 +117,7 @@ public class FrenchLanguageResource implements LanguageResource {
 
     @Override
     public String getBadMarathonDateMessage() {
-        return "Choisissez une date apres aujourd'hui";
+        return "Choisissez une date après aujourd'hui";
     }
 
     @Override
@@ -149,11 +149,11 @@ public class FrenchLanguageResource implements LanguageResource {
     public String printFriendlyString(TrainingActivityType activityType) {
         switch (activityType) {
             case NOT_TRAINING_YET:
-                return "L'entrainement n'a pas commence.";
+                return "L'entrainement n'a pas commencé.";
             case REST:
                 return "Repos";
             case MARATHON_ALREADY_HAPPENED:
-                return "Le marathon a deja eu lieu.";
+                return "Le marathon a déjà eu lieu.";
             case LONG:
                 return "Course longue";
             case CHALLENGE:
@@ -161,7 +161,7 @@ public class FrenchLanguageResource implements LanguageResource {
             case FARTLEK:
                 return "Fartlek";
             case HILLS:
-                return "Cote";
+                return "Côte";
             case TEMPO:
                 return "Tempo";
             case SPEED:
@@ -184,7 +184,7 @@ public class FrenchLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String getDayAfterString() {
+    public String getNextDayString() {
         return "Lendemain";
     }
 

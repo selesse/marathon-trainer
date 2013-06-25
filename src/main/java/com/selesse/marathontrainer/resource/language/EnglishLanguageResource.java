@@ -1,6 +1,6 @@
 package com.selesse.marathontrainer.resource.language;
 
-import com.selesse.marathontrainer.model.StringUtil;
+import com.selesse.marathontrainer.model.StringUtils;
 import com.selesse.marathontrainer.training.TrainingActivityType;
 
 import java.awt.event.KeyEvent;
@@ -158,7 +158,7 @@ public class EnglishLanguageResource implements LanguageResource {
             case MARATHON_TODAY:
                 return "Your marathon is today. Good luck!";
             default:
-                return StringUtil.capitalizeAllCaps(activityType.toString());
+                return StringUtils.capitalizeAll(activityType.toString());
         }
     }
 
@@ -168,8 +168,8 @@ public class EnglishLanguageResource implements LanguageResource {
     }
 
     @Override
-    public String getDayAfterString() {
-        return "Day after";
+    public String getNextDayString() {
+        return "Next day";
     }
 
     @Override

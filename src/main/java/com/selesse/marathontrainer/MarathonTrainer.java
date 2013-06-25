@@ -19,12 +19,11 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.DateFormat;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
+// no pun intended...
 public class MarathonTrainer implements Runnable {
     private LanguageResource resources;
     private JFrame mainFrame;
@@ -33,6 +32,7 @@ public class MarathonTrainer implements Runnable {
     private JXMonthView monthView;
     private JLabel tomorrowsActivityLabel;
     private JLabel activityLabel;
+    private JLabel daysUntilMarathonLabel;
 
     @Override
     public void run() {
@@ -175,7 +175,7 @@ public class MarathonTrainer implements Runnable {
         // initialize all the labels
         activityLabel = new JLabel();
         tomorrowsActivityLabel = new JLabel();
-        final JLabel daysUntilMarathonLabel = new JLabel();
+        daysUntilMarathonLabel = new JLabel();
         final JXLabel referenceSpeedsLabel = new JXLabel(trainingPlan.getReferenceString(resources));
 
         activityLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -187,12 +187,11 @@ public class MarathonTrainer implements Runnable {
         monthView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateActivityInfoLabels(monthView.getSelectionDate(), activityLabel, tomorrowsActivityLabel);
+                updateMarathonLabels(monthView.getSelectionDate());
             }
         });
 
-        updateActivityInfoLabels(monthView.getSelectionDate(), activityLabel, tomorrowsActivityLabel);
-        daysUntilMarathonLabel.setText(getDaysUntilMarathonLabel(getDaysUntilMarathon(trainingPlan)));
+        updateMarathonLabels(monthView.getSelectionDate());
 
         // set the constraints for the all the components and add them to the panel
         // in this case, we're handling the calendar view
@@ -244,6 +243,12 @@ public class MarathonTrainer implements Runnable {
         mainFrame.setVisible(true);
     }
 
+    private void updateMarathonLabels(Date date) {
+        updateActivityInfoLabels(date, activityLabel, tomorrowsActivityLabel);
+        int daysUntilMarathon = DateUtils.getNumberOfDaysBetween(date, settings.getMarathonDate());
+        daysUntilMarathonLabel.setText(getDaysUntilMarathonLabel(daysUntilMarathon));
+    }
+
     private void updateActivityInfoLabels(Date selectedDate, JLabel activityLabel, JLabel tomorrowsActivityLabel) {
         Date dayAfterSelectedDate = DateUtils.getNextDay(selectedDate);
         TrainingActivity trainingActivity = trainingPlan.getActivityForDate(selectedDate);
@@ -251,13 +256,14 @@ public class MarathonTrainer implements Runnable {
 
         String activityString, tomorrowActivityString;
 
-        // if it's today, say "Today:", otherwise say "dd/MM/yyyy:"
+        // if it's today, say "Today:", otherwise say "Jun 24, 2013" (or whatever locale string)
         if (DateUtils.isToday(selectedDate)) {
             activityString = getTodayActivityLabel(trainingActivity.toLanguageString(resources));
         }
         else {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            activityString = getDayActivityLabel(formatter.format(selectedDate),
+            Locale currentLocale = settings.getLanguage().getLocale();
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, currentLocale);
+            activityString = getDayActivityLabel(dateFormat.format(selectedDate),
                     trainingActivity.toLanguageString(resources));
         }
 
@@ -265,10 +271,6 @@ public class MarathonTrainer implements Runnable {
 
         activityLabel.setText(activityString);
         tomorrowsActivityLabel.setText(tomorrowActivityString);
-    }
-
-    private int getDaysUntilMarathon(TrainingPlan trainingPlan) {
-        return DateUtils.getDaysBetween(trainingPlan.getMarathonDate(), new Date());
     }
 
     /**
@@ -287,7 +289,7 @@ public class MarathonTrainer implements Runnable {
     }
 
     private String getTomorrowActivityLabel(String activityText) {
-        return String.format(getTwoLineTemplateString(), resources.getDayAfterString(), activityText);
+        return String.format(getTwoLineTemplateString(), resources.getNextDayString(), activityText);
     }
 
     private String getDaysUntilMarathonLabel(int days) {
@@ -356,7 +358,6 @@ public class MarathonTrainer implements Runnable {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 dialog.dispose();
-                loadTrainingPlan();
                 showMarathonTrainer();
             }
         });
@@ -410,19 +411,19 @@ public class MarathonTrainer implements Runnable {
         Date today = new Date();
         long timeUntilEndOfDay = DateUtils.getNextDayAtMidnight(today).getTime() - today.getTime();
 
-        TimerTask updateToday = new TimerTask() {
+        TimerTask updateSelectionDayTask = new TimerTask() {
             @Override
             public void run() {
                 if (monthView != null) {
                     Date newDay = new Date();
                     monthView.setSelectionDate(newDay);
-                    updateActivityInfoLabels(newDay, activityLabel, tomorrowsActivityLabel);
+                    updateMarathonLabels(newDay);
                 }
             }
         };
 
         Timer timer = new Timer();
         // starting tomorrow, every day we'll try updating the selection date
-        timer.scheduleAtFixedRate(updateToday, timeUntilEndOfDay, 86400 * 1000);
+        timer.scheduleAtFixedRate(updateSelectionDayTask, timeUntilEndOfDay, DateUtils.MILLISECONDS_PER_DAY);
     }
 }

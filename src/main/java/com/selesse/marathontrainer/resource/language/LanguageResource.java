@@ -7,45 +7,45 @@ import com.selesse.marathontrainer.training.TrainingActivityType;
  */
 public interface LanguageResource {
     /**
-     * Get the name of this program.
+     * The name of this program.
      */
     String getProgramName();
 
     /**
-     * Get the {@link Language} for a particular Language resource.
+     * The {@link Language} for a particular Language resource.
      */
     Language getLanguage();
 
     /**
-     * Language string for "File" in the menu.
+     * The string for "File" in the menu.
      */
     String getMenuFileName();
     int getMenuFileMnemonic();
 
     /**
-     * Language string for "Exit" in the "File" submenu.
+     * The string for "Exit" in the "File" submenu.
      */
     String getMenuExitName();
     int getMenuExitMnemonic();
 
     /**
-     * Get the language string for "Half marathon".
+     * The string for "Half marathon".
      */
     String getHalfMarathonName();
 
     /**
-     * Get the language string for "Full marathon".
+     * The string for "Full marathon".
      */
     String getFullMarathonName();
 
     /**
-     * Get the language string for "Settings" in the menu.
+     * The string for "Settings" in the menu.
      */
     String getMenuSettingsName();
     int getMenuSettingsMnemonic();
 
     /**
-     * Get the language string for "Languages" in the settings submenu.
+     * The string for "Languages" in the settings submenu.
      */
     String getMenuLanguageName();
     int getMenuLanguageMnemonic();
@@ -61,7 +61,7 @@ public interface LanguageResource {
     String getLanguageChooserTitle();
 
     /**
-     * Message saying there was a load error.
+     * The string for the load error message.
      */
     String getLoadErrorMessage();
 
@@ -70,20 +70,79 @@ public interface LanguageResource {
      */
     String getLoadErrorTitle();
 
+    /**
+     * The string for "New Marathon".
+     */
     String getNewMarathonName();
     int getNewMarathonMnemonic();
+
+    /**
+     * The string for "Choose the training plan file".
+     */
     String getFileChooserText();
+
+    /**
+     * The string asking when the marathon is.
+     */
     String getWhenMarathonText();
+
+    /**
+     * The string for the "Finish" button in the New Marathon dialog.
+     */
     String getFinishedText();
+
+    /**
+     * The error message for an unselected radio button.
+     */
     String getBadMarathonTypeMessage();
+
+    /**
+     * The title for the unselected radio button error message.
+     */
     String getBadMarathonTypeTitle();
+
+    /**
+     * The string saying that the marathon needs to be after today.
+     */
     String getBadMarathonDateMessage();
+
+    /**
+     * The title for the dialog saying marathon needs to be after today.
+     */
     String getBadMarathonDateTitle();
+
+    /**
+     * The string saying "that's a bad training file".
+     */
     String getBadTrainingFileMessage();
+
+    /**
+     * The title for the dialog saying "that's a bad training file".
+     */
     String getBadTrainingFileTitle();
+
+    /**
+     * The string giving first run instructions, i.e. "File -> New Marathon".
+     */
     String getStartHintText();
+
+    /**
+     * The print friendly string for a given activity type (i.e. "Regular", "Speed").
+     */
     String printFriendlyString(TrainingActivityType activityType);
+
+    /**
+     * The string for "Today".
+     */
     String getTodayString();
-    String getDayAfterString();
+
+    /**
+     * The string for "Next day".
+     */
+    String getNextDayString();
+
+    /**
+     * The string for "Days until marathon".
+     */
     String getDaysUntilMarathonString();
 }
