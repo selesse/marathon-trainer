@@ -16,6 +16,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -33,6 +35,7 @@ public class MarathonTrainer implements Runnable {
     private JLabel tomorrowsActivityLabel;
     private JLabel activityLabel;
     private JLabel daysUntilMarathonLabel;
+    private Date runDate;
 
     @Override
     public void run() {
@@ -41,7 +44,7 @@ public class MarathonTrainer implements Runnable {
             public void run() {
                 settings = loadOrInitializeSettings();
                 createAndShowGUI(settings.getLanguage());
-                updateSelectedDayEveryDay();
+                runDate = new Date();
             }
         });
     }
@@ -78,6 +81,20 @@ public class MarathonTrainer implements Runnable {
 
         mainFrame.setJMenuBar(createMenuBar());
         mainFrame.setPreferredSize(new Dimension(1000, 500));
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // whenever we get window activation (i.e. window focus AND resuming from sleep), see if it's a new day
+                Date rightNow = new Date();
+
+                if (DateUtils.getNumberOfDaysBetween(runDate, rightNow) > 1) {
+                    runDate = new Date();
+                    monthView.setSelectionDate(runDate);
+                    updateMarathonLabels(runDate);
+                }
+            }
+        });
 
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
@@ -405,25 +422,5 @@ public class MarathonTrainer implements Runnable {
         });
 
         return settingsMenu;
-    }
-
-    private void updateSelectedDayEveryDay() {
-        Date today = new Date();
-        long timeUntilEndOfDay = DateUtils.getNextDayAtMidnight(today).getTime() - today.getTime();
-
-        TimerTask updateSelectionDayTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (monthView != null) {
-                    Date newDay = new Date();
-                    monthView.setSelectionDate(newDay);
-                    updateMarathonLabels(newDay);
-                }
-            }
-        };
-
-        Timer timer = new Timer();
-        // starting tomorrow, every day we'll try updating the selection date
-        timer.scheduleAtFixedRate(updateSelectionDayTask, timeUntilEndOfDay, DateUtils.MILLISECONDS_PER_DAY);
     }
 }

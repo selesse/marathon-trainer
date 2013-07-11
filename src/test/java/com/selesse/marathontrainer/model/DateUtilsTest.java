@@ -87,5 +87,22 @@ public class DateUtilsTest {
     @Test
     public void testNextDayAtMidnightHasProperValues() {
         Date tomorrowMidnight = DateUtils.getNextDayAtMidnight(today);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(tomorrowMidnight);
+
+        int tomorrowHour = calendar.get(Calendar.HOUR);
+        int tomorrowMinute = calendar.get(Calendar.MINUTE);
+        int tomorrowSecond = calendar.get(Calendar.SECOND);
+        int tomorrowMillisecond = calendar.get(Calendar.MILLISECOND);
+        int tomorrowDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+
+        calendar.setTime(today);
+
+        assertEquals(tomorrowHour, 0);
+        assertEquals(tomorrowMinute, 0);
+        assertEquals(tomorrowSecond, 0);
+        assertEquals(tomorrowMillisecond, 0);
+        assertEquals(tomorrowDayOfYear, calendar.get(Calendar.DAY_OF_YEAR) + 1);
     }
 }
