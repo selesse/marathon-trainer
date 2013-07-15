@@ -3,7 +3,7 @@ apply plugin: 'java'
 defaultTasks 'clean', 'build', 'copyTrainingPlans'
 
 sourceCompatibility = 1.7
-version = '1.0'
+version = '1.0-SNAPSHOT'
 
 compileTestJava.options.encoding = 'utf-8'
 compileJava.options.encoding = 'utf-8'
@@ -43,4 +43,8 @@ task copyTrainingPlans(type: Copy, dependsOn: 'jar') {
 
 clean.doLast {
   ant.delete(dir: releaseDir)
+}
+
+task getVersion << {
+  System.println version
 }
