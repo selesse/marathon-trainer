@@ -10,6 +10,11 @@ enter your training plan and launch the application, it'll tell you (for
 example) that today you'll be running 9 KM at a regular pace. (The paces for
 the different run types are defined via the training plan.)
 
+Requirements
+--------------
+
+Gradle 1.6+ is required to build marathon-trainer.
+
 Building the Code
 -----------------
 

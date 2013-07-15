@@ -22,8 +22,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.text.DateFormat;
-import java.util.*;
-import java.util.Timer;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 // no pun intended...
 public class MarathonTrainer implements Runnable {
