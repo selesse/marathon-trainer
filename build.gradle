@@ -44,3 +44,7 @@ task copyTrainingPlans(type: Copy, dependsOn: 'jar') {
 clean.doLast {
   ant.delete(dir: releaseDir)
 }
+
+task getVersion << {
+  System.println version
+}

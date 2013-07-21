@@ -23,6 +23,8 @@ directory, type the following:
 
     gradle
 
+The default gradle task is to "clean", "build", and "copyTrainingPlans".
+
 Setup
 -----
 
