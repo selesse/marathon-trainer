@@ -77,7 +77,7 @@ public class MarathonTrainer implements Runnable {
 
         setSystemLookAndFeel();
 
-        mainFrame = new JFrame(resources.getProgramName());
+        mainFrame = new JFrame(getProgramTitle());
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainFrame.setJMenuBar(createMenuBar());
@@ -177,6 +177,8 @@ public class MarathonTrainer implements Runnable {
 
         loadTrainingPlan();
 
+        mainFrame.setTitle(getProgramTitle());
+
         // set up the month view
         monthView = new JXMonthView(resources.getLanguage().getLocale());
         monthView.setFirstDayOfWeek(Calendar.SUNDAY);
@@ -259,6 +261,16 @@ public class MarathonTrainer implements Runnable {
 
         mainFrame.getContentPane().add(innerMarathonPanel);
         mainFrame.setVisible(true);
+    }
+
+    private String getProgramTitle() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(resources.getProgramName());
+        if (settings.getTargetTime() != null) {
+            stringBuilder.append(" - ").append(settings.getTargetTime());
+        }
+
+        return stringBuilder.toString();
     }
 
     private void updateMarathonLabels(Date date) {

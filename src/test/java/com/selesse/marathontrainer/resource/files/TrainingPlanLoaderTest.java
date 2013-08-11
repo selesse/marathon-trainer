@@ -23,11 +23,17 @@ import static junit.framework.Assert.assertTrue;
  */
 public class TrainingPlanLoaderTest {
     private TrainingPlan trainingPlan;
+    private Settings settings;
 
     public static TrainingPlan createMockTrainingPlan() throws IOException, InvalidTrainingFileException {
+        return createMockTrainingPlan(new Settings(Language.ENGLISH));
+    }
 
+    public static TrainingPlan createMockTrainingPlan(Settings settings) throws IOException, InvalidTrainingFileException {
         List<String> fileSampleContents = new ArrayList<String>();
 
+        fileSampleContents.add("full 4h00m");
+        fileSampleContents.add("");
         fileSampleContents.add("long 6:30-7:30");
         fileSampleContents.add("tempo 5:55");
         fileSampleContents.add("regular 6:00");
@@ -48,7 +54,6 @@ public class TrainingPlanLoaderTest {
 
         out.close();
 
-        Settings settings = new Settings(Language.ENGLISH);
         settings.setMarathonType(MarathonType.HALF);
         settings.setTrainingPlanPath(tempFile.getAbsolutePath());
 
@@ -57,7 +62,8 @@ public class TrainingPlanLoaderTest {
 
     @Before
     public void setUpSampleFile() throws IOException, InvalidTrainingFileException {
-        trainingPlan = createMockTrainingPlan();
+        settings = new Settings(Language.ENGLISH);
+        trainingPlan = createMockTrainingPlan(settings);
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -227,5 +233,11 @@ public class TrainingPlanLoaderTest {
 
         assertEquals(2.6, trainingActivity.getQuantity(), 0.005);
         assertEquals(3, trainingActivity.getNumberOfTimes());
+    }
+
+    @Test
+    public void testTypeAndTimeParsedCorrectly() {
+        assertEquals(MarathonType.FULL, settings.getMarathonType());
+        assertEquals("4h00m", settings.getTargetTime());
     }
 }

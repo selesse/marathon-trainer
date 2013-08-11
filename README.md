@@ -33,6 +33,9 @@ directory.
 
 Files within the `training-plan` directory should be structured as such:
 
+    # [half|full] [target time]
+    half 2h
+
     # [run-type] [length or range]
     tempo 5:30
     speed 4:00-4:30

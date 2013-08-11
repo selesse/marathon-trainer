@@ -2,6 +2,7 @@ package com.selesse.marathontrainer.resource.files;
 
 import com.selesse.marathontrainer.model.Settings;
 import com.selesse.marathontrainer.model.Weekday;
+import com.selesse.marathontrainer.resource.language.Language;
 import com.selesse.marathontrainer.training.*;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class TrainingPlanLoader {
 
         Scanner fileScanner = new Scanner(trainingPlanFile);
 
-        parseFile(fileScanner, trainingPlan);
+        parseFile(fileScanner, trainingPlan, settings);
 
         if (trainingPlan.getTrainingWeekList().size() == 0) {
             throw new InvalidTrainingFileException();
@@ -27,10 +28,33 @@ public class TrainingPlanLoader {
         return trainingPlan;
     }
 
-    private static void parseFile(Scanner fileScanner, TrainingPlan trainingPlan) throws InvalidTrainingFileException {
+    private static void parseFile(Scanner fileScanner, TrainingPlan trainingPlan, Settings settings) throws InvalidTrainingFileException {
         // the order matters
+        parseAndSetupTypeAndTime(fileScanner, settings);
         parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
         parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+    }
+
+    private static void parseAndSetupTypeAndTime(Scanner fileScanner, Settings settings) throws InvalidTrainingFileException {
+        while (fileScanner.hasNext()) {
+            String nextLine = fileScanner.nextLine();
+
+            if (nextLine.equals("")) {
+                break;
+            }
+
+            try {
+                String[] typeAndTime = nextLine.split(" ");
+                String type = typeAndTime[0];
+                String time = typeAndTime[1];
+
+                settings.setMarathonType(MarathonType.valueOf(type.toUpperCase()));
+                settings.setTargetTime(time);
+            }
+            catch (Exception e) {
+                throw new InvalidTrainingFileException("Could not properly parse type and time.");
+            }
+        }
     }
 
     public static boolean isValidTrainingPlan(File trainingPlanFile) {
@@ -38,8 +62,7 @@ public class TrainingPlanLoader {
             Scanner fileScanner = new Scanner(trainingPlanFile);
             TrainingPlan trainingPlan = new TrainingPlan(MarathonType.FULL);
 
-            parseAndSetupReferenceSpeeds(fileScanner, trainingPlan);
-            parseAndSetupTrainingWeeks(fileScanner, trainingPlan);
+            parseFile(fileScanner, trainingPlan, new Settings(Language.ENGLISH));
         } catch (Exception e) {
             return false;
         }

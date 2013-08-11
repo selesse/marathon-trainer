@@ -11,6 +11,7 @@ public class Settings implements Serializable {
     private String trainingPlanPath;
     private Date marathonDate;
     private Language language;
+    private String targetTime;
 
     public Settings(Language language) {
         this.language = language;
@@ -54,5 +55,13 @@ public class Settings implements Serializable {
 
     public Language getLanguage() {
         return language;
+    }
+
+    public String getTargetTime() {
+        return targetTime;
+    }
+
+    public void setTargetTime(String targetTime) {
+        this.targetTime = targetTime;
     }
 }
