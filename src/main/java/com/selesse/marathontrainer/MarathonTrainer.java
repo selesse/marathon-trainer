@@ -51,8 +51,8 @@ public class MarathonTrainer implements Runnable {
     }
 
     private Settings loadOrInitializeSettings() {
+        File settingsFile = new File(Settings.getSettingsLocation());
         try {
-            File settingsFile = new File(Settings.getSettingsLocation());
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(settingsFile));
 
             settings = (Settings) ois.readObject();
@@ -65,8 +65,8 @@ public class MarathonTrainer implements Runnable {
             // cool, do nothing
         }
         catch (Exception e) {
-            JOptionPane.showMessageDialog(mainFrame, resources.getLoadErrorMessage(), resources.getLoadErrorTitle(),
-                    JOptionPane.ERROR_MESSAGE);
+            System.err.print("Exception loading settings: ");
+            System.err.println(e.getMessage());
         }
 
         return new Settings(Language.ENGLISH);
