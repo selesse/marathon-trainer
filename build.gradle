@@ -3,7 +3,7 @@ apply plugin: 'java'
 defaultTasks 'clean', 'build', 'copyTrainingPlans'
 
 sourceCompatibility = 1.7
-version = '1.0.0'
+version = '1..0'
 
 compileTestJava.options.encoding = 'utf-8'
 compileJava.options.encoding = 'utf-8'
