@@ -1,88 +1,31 @@
 apply plugin: 'java'
-
-defaultTasks 'clean', 'build', 'copyTrainingPlans'
+apply plugin: 'application'
 
 sourceCompatibility = 1.7
-version = '1.1.1'
+version = '1.2.0'
 
 compileTestJava.options.encoding = 'utf-8'
 compileJava.options.encoding = 'utf-8'
 
-configurations {
-  proguard
-}
+mainClassName = 'com.selesse.marathontrainer.Main'
 
 ext {
-  releaseDir = "release"
-  trainingPlanDir = "training-plan"
-  trainingReleasePath = releaseDir + "/" + trainingPlanDir
+    trainingPlanDir = "training-plan"
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  compile 'org.swinglabs:swingx:0.9.2'
+    compile 'org.swinglabs:swingx:0.9.2'
 
-  testCompile 'junit:junit:4.10'
-
-  proguard 'net.sf.proguard:proguard-base:4.10'
+    testCompile 'junit:junit:4.10'
 }
 
-jar {
-  destinationDir = file(releaseDir)
-  manifest {
-    attributes 'Manifest-Version': version, 'Main-Class': 'com.selesse.marathontrainer.Main'
-  }
-
-  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+distributions.main.contents {
+    from(trainingPlanDir) {
+        into trainingPlanDir
+    }
+    exclude ".settings"
 }
-
-jar.doLast {
-  ant.mkdir(dir: trainingReleasePath)
-}
-
-task copyTrainingPlans(type: Copy, dependsOn: 'jar') {
-  from trainingPlanDir
-  into trainingReleasePath
-}
-
-clean.doLast {
-  ant.delete(dir: releaseDir)
-}
-
-task getVersion << {
-  System.println version
-}
-
-task release(dependsOn: 'assemble') << {}
-
-gradle.taskGraph.whenReady {taskGraph ->
-  if (!taskGraph.hasTask(release)) {
-    version += "-SNAPSHOT"
-  }
-}
-
-
-task proguard(type: JavaExec, dependsOn: jar) {
-    def outFile = jar.destinationDir.getPath() + '/' + jar.baseName + '-' + jar.version + '-small' + '.' + jar.extension
-    inputs.file jar.archivePath
-    outputs.file outFile
-
-    classpath = configurations.proguard
-    main = 'proguard.ProGuard'
-    args "-injars ${jar.archivePath}"
-    args "-outjars ${outFile}"
-    args "-libraryjars ${System.properties['java.home']}/lib/rt.jar"
-    args '-dontobfuscate'
-    args '-dontoptimize'
-    args '-keep class * extends javax.swing.plaf.ComponentUI { *; }'
-    args '-keep public class org.jdesktop.swingx.JXMonthView { *; }'
-    args '-keep public class com.selesse.marathontrainer.Main { public static void main(java.lang.String[]); }'
-    args '-keepclassmembers enum * { public static **[] values(); public static ** valueOf(java.lang.String); }'
-    args '-dontwarn org.jdesktop.**'
-    args '-dontnote org.jdesktop.**'
-}
-
-tasks.getByPath(':release').dependsOn(proguard)
